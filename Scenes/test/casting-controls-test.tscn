@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bf3ob6aaqc5u0"]
+
+[ext_resource type="Script" uid="uid://npyum54l57pr" path="res://Scripts/cast_typer.gd" id="1_ihy57"]
+[ext_resource type="Script" uid="uid://dxy3nleql3xtp" path="res://Scripts/cast_typer_test.gd" id="2_26m1g"]
+[ext_resource type="Script" uid="uid://7j4fkr5ek5jg" path="res://Scripts/UITest.gd" id="3_ryy0t"]
+
+[node name="Node2D" type="Node2D" unique_id=213238332]
+
+[node name="CastTyper" type="Node" parent="." unique_id=906152024]
+script = ExtResource("1_ihy57")
+
+[node name="CastTyperTest" type="Node" parent="." unique_id=1590826190 node_paths=PackedStringArray("typer")]
+script = ExtResource("2_26m1g")
+typer = NodePath("../CastTyper")
+
+[node name="Control" type="Control" parent="." unique_id=1513389826]
+custom_minimum_size = Vector2(177.875, 79.915)
+layout_mode = 3
+anchors_preset = 0
+offset_top = 1.0
+offset_right = 1152.0
+offset_bottom = 647.0
+script = ExtResource("3_ryy0t")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control" unique_id=545027165]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="on_failed_cast" from="CastTyper" to="Control" method="_on_cast_typer_on_failed_cast"]
+[connection signal="on_successful_cast" from="CastTyper" to="Control" method="_on_cast_typer_on_successful_cast"]
+[connection signal="setup_graphics" from="CastTyper" to="Control" method="_on_cast_typer_setup_graphics"]
+[connection signal="update_graphics" from="CastTyper" to="Control" method="_on_cast_typer_update_graphics"]

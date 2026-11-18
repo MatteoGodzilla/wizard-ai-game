@@ -1,0 +1,10 @@
+enum Spell{
+	ACQUA,
+	AER,
+	IGNIS,
+	TERRA,
+	LUX,
+	TENEBRAE,
+	CORPUS,
+	ARCANUM
+}
