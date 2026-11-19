@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Enums="*uid://04ktf8aeddtp"
+Audio="*uid://bln7ho5bhxsic"
 
 [display]
 

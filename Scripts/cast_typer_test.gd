@@ -5,6 +5,7 @@ extends Node
 func _ready() -> void:
 	print(Enums.spell_to_string(Enums.Spell.AQUA))
 	assert(Enums.string_to_spell(Enums.spell_to_string(Enums.Spell.AQUA)) == Enums.Spell.AQUA)
+	Audio.next_bgm()
 	pass
 
 func _input(event: InputEvent) -> void:

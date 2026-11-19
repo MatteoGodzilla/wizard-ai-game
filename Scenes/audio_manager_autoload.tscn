@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bln7ho5bhxsic"]
+
+[ext_resource type="Script" uid="uid://busdluy184pa4" path="res://Scripts/audio_manager.gd" id="1_sm2tf"]
+[ext_resource type="AudioStream" uid="uid://dw8awh4xhcd6v" path="res://Audio/andriig-agriculture-farming-farm-music-551390.mp3" id="2_el2we"]
+
+[node name="Audio Manager" type="Node" unique_id=1657933678]
+script = ExtResource("1_sm2tf")
+background_tracks = Array[AudioStream]([ExtResource("2_el2we")])
+bgm_initial_volume_db = -6
+
+[node name="BGM Stream Player" type="AudioStreamPlayer" parent="." unique_id=1974145008]
+
+[node name="Audio Debug" type="Node" parent="." unique_id=1467032936]
+
+[connection signal="finished" from="BGM Stream Player" to="." method="on_bgm_stream_player_finished"]
