@@ -1,0 +1,230 @@
+{
+  "catalog_version": 1,
+  "notes": "Shipped entries are ready-to-cast presets. Player entries retain their descriptions and cache validated generated definitions separately.",
+  "reference_descriptions": [
+    {
+      "names": [
+        "stop time",
+        "time stop"
+      ],
+      "description": "Stop time across the whole arena for six seconds and make the player camera view black and white by setting its screen saturation to zero for the same duration. The caster keeps moving. Restore both effects when time resumes."
+    }
+  ],
+  "entries": [
+    {
+      "entry_id": "classic.fireball",
+      "name": "Fireball",
+      "description": "A fiery moving sphere that bursts on impact and ignites exposed wood or grass; moderate structural force.",
+      "origin": "CLASSIC",
+      "resolution_policy": "PRESET",
+      "aliases": [
+        "fire ball"
+      ],
+      "balance": "power 1, ordinary fire damage and ignition",
+      "intent": {
+        "schema_version": 3,
+        "form": "ORB",
+        "palette": "ORANGE",
+        "particle": "SPARKS",
+        "effect": "IGNITE",
+        "power": 1
+      }
+    },
+    {
+      "entry_id": "crossgame.aqua",
+      "name": "Aqua",
+      "description": "A short water dart that wets nearby wood and grass on impact, putting out fire and keeping fuel damp for four seconds.",
+      "origin": "CLASSIC",
+      "resolution_policy": "PRESET",
+      "aliases": [],
+      "intent": {
+        "schema_version": 3,
+        "form": "BOLT",
+        "palette": "CYAN",
+        "particle": "MAGIC",
+        "effect": "NONE",
+        "power": 0,
+        "rules": [
+          {
+            "event": "HIT",
+            "scope": "NEARBY",
+            "tag": "ANY",
+            "op": "STATUS",
+            "property": "WET",
+            "value": 1,
+            "radius": 2,
+            "duration": 4
+          }
+        ],
+        "emitters": [
+          {
+            "phase": "HIT",
+            "anchor": "TARGET",
+            "direction": "OUTWARD",
+            "shape": "MOTE",
+            "color": "CYAN",
+            "speed": 3,
+            "size": 0.085,
+            "count": 24
+          }
+        ]
+      }
+    },
+    {
+      "entry_id": "reference.kamehameha",
+      "name": "Kamehameha",
+      "description": "Charge for 1.2 seconds and release a blue energy beam with high penetration and heavy structural force.",
+      "origin": "FICTION_REFERENCE",
+      "resolution_policy": "PRESET",
+      "aliases": [],
+      "balance": "power 2, heavy structural hit with a charged beam",
+      "intent": {
+        "schema_version": 3,
+        "form": "BEAM",
+        "palette": "BLUE",
+        "particle": "MAGIC",
+        "effect": "BREAK",
+        "power": 2,
+        "charge": 1.2
+      }
+    },
+    {
+      "entry_id": "reference.hollow_purple",
+      "name": "Hollow Purple",
+      "description": "Charge for 1.2 seconds and launch a violet sphere that pierces and erases destructible matter along its path.",
+      "origin": "FICTION_REFERENCE",
+      "resolution_policy": "PRESET",
+      "aliases": [],
+      "balance": "power 3, exceptional bounded erasure",
+      "intent": {
+        "schema_version": 3,
+        "form": "ORB",
+        "palette": "VIOLET",
+        "particle": "MAGIC",
+        "effect": "ERASE",
+        "power": 3,
+        "charge": 1.2
+      }
+    },
+    {
+      "entry_id": "reference.snowgrave",
+      "name": "Snowgrave",
+      "description": "A six-second ice storm around the caster that damages nearby props in pulses and freezes water within the storm.",
+      "origin": "FICTION_REFERENCE",
+      "resolution_policy": "PRESET",
+      "aliases": [],
+      "intent": {
+        "schema_version": 3,
+        "form": "DOMAIN",
+        "palette": "CYAN",
+        "particle": "NONE",
+        "effect": "NONE",
+        "power": 0,
+        "radius": 7,
+        "duration": 6,
+        "rules": [
+          {
+            "event": "ENTER",
+            "scope": "MEMBER",
+            "tag": "WATER",
+            "op": "TRANSFORM",
+            "property": "MATERIAL",
+            "value": "ICE"
+          },
+          {
+            "event": "INTERVAL",
+            "scope": "AREA",
+            "tag": "ANY",
+            "op": "DAMAGE",
+            "property": "INTEGRITY",
+            "value": 1,
+            "interval": 1
+          }
+        ],
+        "emitters": [
+          {
+            "phase": "ACTIVE",
+            "anchor": "SPELL",
+            "direction": "DOWN",
+            "shape": "FLAKE",
+            "color": "WHITE",
+            "speed": 2,
+            "size": 0.18,
+            "count": 42
+          }
+        ]
+      }
+    },
+    {
+      "entry_id": "original.betis",
+      "name": "Betis",
+      "description": "A bright green smoky fireball that makes a modest explosion when it hits something.",
+      "origin": "ORIGINAL",
+      "resolution_policy": "PRESET",
+      "aliases": [],
+      "intent": {
+        "schema_version": 3,
+        "form": "ORB",
+        "palette": "GREEN",
+        "particle": "SMOKE",
+        "effect": "BURST",
+        "power": 0
+      }
+    },
+    {
+      "entry_id": "original.violet_sanctuary",
+      "name": "Violet Sanctuary",
+      "description": "A transparent violet sphere around the caster that slows projectiles while they are inside.",
+      "origin": "ORIGINAL",
+      "resolution_policy": "PRESET",
+      "aliases": [],
+      "intent": {
+        "schema_version": 3,
+        "form": "DOMAIN",
+        "palette": "VIOLET",
+        "particle": "NONE",
+        "effect": "NONE",
+        "power": 0,
+        "radius": 6,
+        "duration": 6,
+        "rules": [
+          {
+            "event": "ENTER",
+            "scope": "MEMBER",
+            "tag": "PROJECTILE",
+            "op": "MULTIPLY",
+            "property": "SPEED",
+            "value": 0.35
+          }
+        ]
+      }
+    },
+    {
+      "entry_id": "classic.levitate",
+      "name": "Levitate",
+      "description": "Lift the caster 1.6 meters off the ground for six seconds. Steer in the air and cross water before landing.",
+      "origin": "CLASSIC",
+      "resolution_policy": "PRESET",
+      "aliases": [],
+      "intent": {
+        "schema_version": 3,
+        "form": "RITUAL",
+        "palette": "DEFAULT",
+        "particle": "NONE",
+        "effect": "NONE",
+        "power": 0,
+        "rules": [
+          {
+            "event": "CAST",
+            "scope": "CASTER",
+            "tag": "ANY",
+            "op": "SET",
+            "property": "HOVER",
+            "value": 1.6,
+            "duration": 6
+          }
+        ]
+      }
+    }
+  ]
+}

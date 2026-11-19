@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Local Godot AI editor bridge
+/addons/godot_ai/
+/override.cfg
