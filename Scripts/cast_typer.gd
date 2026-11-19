@@ -35,8 +35,8 @@ func _check_typed_spell(typed: Enums.Spell):
 func _input(event: InputEvent) -> void:
 	var typed_by_player : Enums.Spell
 	# There has to be a better way for this
-	if Input.is_action_just_pressed("Acqua"):
-		_check_typed_spell(Enums.Spell.ACQUA)
+	if Input.is_action_just_pressed("Aqua"):
+		_check_typed_spell(Enums.Spell.AQUA)
 	elif Input.is_action_just_pressed("Aer"):
 		_check_typed_spell(Enums.Spell.AER)
 	elif Input.is_action_just_pressed("Ignis"):
