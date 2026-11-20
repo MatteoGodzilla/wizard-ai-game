@@ -5,3 +5,7 @@
 # Local Godot AI editor bridge
 /addons/godot_ai/
 /override.cfg
+
+# Local files
+.local
+/spellcheck/local/

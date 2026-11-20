@@ -4,9 +4,9 @@ signal completed(token: int, result: Dictionary)
 
 const Intent = preload("res://spellcheck/spell_intent.gd")
 const Catalog = preload("res://spellcheck/spell_catalog.gd")
+const Rules = preload("res://spellcheck/magic_rules.gd")
 const Laya = preload("res://spellcheck/laya_resolver.gd")
 const MODEL := "gemma3:4b"
-const CACHE_IDENTITY := "structured-spells-v11/" + MODEL
 const TIME_BUDGET_MS := 70000
 
 var power_anchors := ""
@@ -30,7 +30,7 @@ func resolve(spell_name: String, description: String, token: int) -> void:
 	_send(token, input)
 
 
-func _send(token: int, input: Dictionary, correction: String = "", draft: String = "") -> void:
+func _send(token: int, input: Dictionary, correction: String = "", draft: String = "", impact_only: bool = false) -> void:
 	_request = HTTPRequest.new()
 	_request.timeout = maxf(0.1, (TIME_BUDGET_MS - (Time.get_ticks_msec() - _started)) / 1000.0)
 	_request.max_redirects = 0
@@ -39,17 +39,26 @@ func _send(token: int, input: Dictionary, correction: String = "", draft: String
 	_request.request_completed.connect(_on_chat.bind(token, input, not correction.is_empty()), CONNECT_ONE_SHOT)
 	var player_data := input.duplicate()
 	var system := Catalog.prompt(power_anchors)
+	var schema := _schema
 	if not correction.is_empty():
 		player_data["validation_feedback"] = correction
-		player_data["invalid_draft"] = draft
-		system += "\nRepair the invalid draft using the validation feedback and the original player request. Return a complete spell."
+		if impact_only:
+			player_data["previous_interpretation"] = draft
+			system = Catalog.IMPACT_REPAIR_BRIEF
+			var named_attack := _is_short_invocation(input.get("name_or_request", ""))
+			if named_attack:
+				system += "\nFor this short invocation, choose the closest playable attack using a standard impact effect."
+			schema = Catalog.schema(true, named_attack)
+		else:
+			player_data["invalid_draft"] = draft
+			system += "\nRepair the invalid draft using the validation feedback and the original player request. Return a complete spell."
 	var payload := JSON.stringify({
 		"model": MODEL,
 		"messages": [
 			{"role": "system", "content": system},
 			{"role": "user", "content": JSON.stringify(player_data)},
 		],
-		"format": _schema, "stream": false, "keep_alive": "15m",
+		"format": schema, "stream": false, "keep_alive": "15m",
 		"options": {"temperature": 0, "num_predict": 1050, "num_ctx": 4096},
 	}, "", false)
 	if _request.request(Laya.base_url() + "/api/chat", ["Content-Type: application/json"], HTTPClient.METHOD_POST, payload) != OK:
@@ -85,10 +94,17 @@ func _on_chat(
 	if payload.has("error") and not payload.get("unintelligible", false) and not repaired:
 		if Time.get_ticks_msec() - _started < TIME_BUDGET_MS - 1500:
 			var draft := ""
+			var impact_only: bool = payload.get("repair_impact", false)
 			if envelope is Dictionary and envelope.get("message") is Dictionary:
-				draft = str(envelope["message"].get("content", "")).left(1400)
+				var content := str(envelope["message"].get("content", ""))
+				if impact_only:
+					var data: Variant = JSON.parse_string(content)
+					if data is Dictionary:
+						draft = str(data.get("meaning", "")).left(150)
+				else:
+					draft = content.left(1400)
 			_clear_http()
-			_send(token, input, payload["error"], draft)
+			_send(token, input, payload["error"], draft, impact_only)
 			return
 	_finish(token, payload)
 
@@ -128,6 +144,17 @@ static func name_error(spell_name: String) -> String:
 	return ""
 
 
+static func _describes_traveling_impact(meaning: String) -> bool:
+	var launch := RegEx.create_from_string("(?i)\\b(?:launch(?:es|ed)?|throws?|thrown|shoots?|shot|travels?)\\b")
+	var impact := RegEx.create_from_string("(?i)\\b(?:hits?|impacts?|strikes?|cuts?|cleaves?)\\b")
+	return launch.search(meaning) != null and impact.search(meaning) != null
+
+
+static func _is_short_invocation(request: String) -> bool:
+	var name := RegEx.create_from_string("^\\p{L}+[\\p{L}\\p{N}'’-]*(?:\\s+\\p{L}+[\\p{L}\\p{N}'’-]*){0,2}$")
+	return name.search(request.strip_edges()) != null
+
+
 static func decode(envelope: Variant, request: String = "") -> Dictionary:
 	if not envelope is Dictionary or not envelope.get("message") is Dictionary:
 		return {"error": "Expected one message containing a spell JSON object."}
@@ -147,6 +174,14 @@ static func decode(envelope: Variant, request: String = "") -> Dictionary:
 		return {"error": "Direct changes require COMPOSED and at least one rule."}
 	var rules: Array = data.get("rules", [])
 	var form: Variant = data.get("form")
+	var needs_impact := _describes_traveling_impact(data["meaning"])
+	if form not in Rules.HIT_FORMS and (needs_impact or rules.any(func(rule: Variant) -> bool:
+		return rule is Dictionary and rule.get("event") == "HIT"
+	)):
+		return {
+			"error": "Your interpretation launches an attack that hits. Use a traveling form and put the described attack on impact. For ordinary structural damage use BUILT_IN with BREAK. Keep only effects from the original request.",
+			"repair_impact": true,
+		}
 	var grounded := Catalog.grounded_rules(data, request)
 	var removed_trail := grounded.size() != rules.size()
 	if removed_trail:
@@ -186,5 +221,7 @@ static func decode(envelope: Variant, request: String = "") -> Dictionary:
 	data["schema_version"] = Intent.SCHEMA_VERSION
 	var validated := Intent.compile(data)
 	if validated.has("error"):
+		if needs_impact:
+			validated["repair_impact"] = true
 		return validated
 	return {"intent": data, "meaning": "" if removed_trail else meaning, "reference": reference, "model": MODEL}

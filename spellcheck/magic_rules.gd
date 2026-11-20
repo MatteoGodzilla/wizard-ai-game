@@ -6,6 +6,8 @@ signal burst(position: Vector3, color: Color)
 signal spawn_requested(archetype: String, position: Vector3, count: int)
 
 const EVENTS := ["CAST", "HIT", "ENTER", "LEAVE", "INTERVAL", "EXPIRE"]
+const HIT_FORMS := ["ORB", "BOLT", "BEAM", "ARC", "WAVE"]
+const DOMAIN_EVENTS := ["ENTER", "LEAVE", "INTERVAL"]
 const SCOPES := ["CASTER", "HIT", "MEMBER", "NEARBY", "AREA", "ARENA", "AIM", "CAMERA"]
 const TAGS := ["ANY", "TREE", "ROCK", "TIMBER", "WOOD", "STONE", "GRASS", "PROJECTILE", "FIRE_PROJECTILE", "MOVING", "SCORCHED", "BURNING", "WORLD", "WATER", "ICE"]
 const OPERATIONS := ["SET", "ADD", "MULTIPLY", "TRANSFORM", "DAMAGE", "DESTROY", "STATUS", "EMIT", "SPAWN"]
@@ -57,11 +59,11 @@ static func compile_rule(raw: Variant, form: String, palettes: Dictionary, spell
 		return {"error": "That event does not provide the selected target."}
 	if event in ["ENTER", "LEAVE"] and scope != "MEMBER":
 		return {"error": "Entry and exit rules need the member that crossed the boundary."}
-	if event in ["ENTER", "LEAVE", "INTERVAL"] and form != "DOMAIN":
+	if event in DOMAIN_EVENTS and form != "DOMAIN":
 		return {"error": "Membership and interval rules require a domain."}
 	if scope == "AREA" and form != "DOMAIN":
 		return {"error": "AREA selects targets inside a DOMAIN. Use NEARBY for a radius around the cast or impact."}
-	if event == "HIT" and form in ["RITUAL", "WARD", "DOMAIN"]:
+	if event == "HIT" and form not in HIT_FORMS:
 		return {"error": "That form does not hit. Use CAST for direct effects, or use a traveling form for impacts."}
 	if scope == "AIM" and (op != "SPAWN" or event != "CAST"):
 		return {"error": "Aim-point placement needs a cast-time spawn rule."}

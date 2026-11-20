@@ -4,6 +4,14 @@ const Intent = preload("res://spellcheck/spell_intent.gd")
 const Rules = preload("res://spellcheck/magic_rules.gd")
 const CASTER_TRAIL_WORDS := "(?:after[ -]?images?|ghost[ -]trails?|motion echoes|(?:cop(?:y|ies)|echo(?:es)?|silhouettes?) of (?:me|myself|(?:the )?(?:caster|wizard)))"
 
+const IMPACT_REPAIR_BRIEF := """
+Compile one traveling spell from the original request. Use the previous interpretation as a hint about what flies and what it does on impact. The spell's motion is determined by its form and path. Rules change gameplay, so leave out unrelated buffs, time changes, and world edits.
+Use BOLT for a narrow, fast thrown shape such as a dart or cutting projectile, ORB for a round shot, WAVE for a spreading front, BEAM for a ray, and ARC for lightning.
+Use BUILT_IN when the spell only needs ordinary impact behavior. BREAK damages destructible targets. IGNITE burns flammable targets. ERASE pierces and removes targets when erasure is requested. BURST is a visual impact. Use power 1 for ordinary damage, 2 for a strong impact, and 3 for overwhelming damage. Use charge 0 and a STRAIGHT path unless the request calls for different timing or motion. Use beam {} for nonbeams and emitters [] when extra particles are unnecessary.
+Example for a silver cutting projectile: {"status":"BUILT_IN","reference":"","meaning":"Throws a white blade that damages targets on impact.","form":"BOLT","palette":"WHITE","particle":"SPARKS","effect":"BREAK","power":2,"charge":0,"path":"STRAIGHT","beam":{},"emitters":[]}
+Use COMPOSED only when the request needs custom gameplay rules. A rule that changes the impact target uses event HIT and scope HIT. Emitters at the impact use phase HIT and anchor TARGET. Return one JSON object matching the schema.
+"""
+
 const BRIEF := """
 Design ONE playable spell from the player data. Interpret a description as the requested behavior, even if it describes a fictional device or a technique from another genre. For a reference, infer the signature mechanics and visuals, then map each to available options. Approximate recognizable unsupported ideas and describe what will actually happen. Return UNINTELLIGIBLE only for gibberish, unrelated input, or a bare name with no inferable meaning. Put the source franchise in reference if recognized, otherwise "". Keep meaning short.
 
@@ -94,13 +102,14 @@ static func _is_mobility_ritual(intent: Dictionary, rules: Array) -> bool:
 	)
 
 
-static func schema() -> Dictionary:
+static func schema(impact_only: bool = false, built_in_only: bool = false) -> Dictionary:
 	var palettes := Intent.PALETTES.keys()
+	var forms := Rules.HIT_FORMS if impact_only else Intent.FORMS
 	var summary := {
 		"status": _choice(["BUILT_IN"]),
 		"reference": {"type": "string", "maxLength": 60},
 		"meaning": {"type": "string", "maxLength": 150},
-		"form": _choice(Intent.FORMS),
+		"form": _choice(forms),
 	}
 	var body := {
 		"palette": _choice(palettes),
@@ -130,20 +139,25 @@ static func schema() -> Dictionary:
 		},
 	}
 	var core := ["palette", "particle", "effect", "power", "charge", "path", "beam", "emitters"]
-	var composed := summary.merged({
-		"status": _choice(["COMPOSED"]),
-		"rules": {"type": "array", "minItems": 1, "maxItems": Rules.MAX_RULES, "items": _rule_schema(palettes)},
-	}, true)
-	return {"anyOf": [
+	var choices := [
 		_object(summary.merged(body).merged({
-			"form": _choice(Intent.FORMS.filter(func(form: String) -> bool: return form != "RITUAL")),
+			"form": _choice(forms.filter(func(form: String) -> bool: return form != "RITUAL")),
 		}, true), summary.keys() + core),
-		_object(composed.merged(body), composed.keys() + core),
-		_object({"status": _choice(["UNINTELLIGIBLE"])}, ["status"]),
-	]}
+	]
+	if not built_in_only:
+		var composed := summary.merged({
+			"status": _choice(["COMPOSED"]),
+			"rules": {
+				"type": "array", "minItems": 1, "maxItems": Rules.MAX_RULES,
+				"items": _rule_schema(palettes, impact_only),
+			},
+		}, true)
+		choices.append(_object(composed.merged(body), composed.keys() + core))
+	choices.append(_object({"status": _choice(["UNINTELLIGIBLE"])}, ["status"]))
+	return {"anyOf": choices}
 
 
-static func _rule_schema(palettes: Array) -> Dictionary:
+static func _rule_schema(palettes: Array, impact_only: bool) -> Dictionary:
 	var arithmetic := _choice(["SET", "ADD", "MULTIPLY"])
 	var common := {
 		"op": arithmetic,
@@ -196,7 +210,11 @@ static func _rule_schema(palettes: Array) -> Dictionary:
 	]
 	var choices: Array[Dictionary] = []
 	for variant: Dictionary in variants:
-		choices.append(_object(common.merged(variant, true), common.keys()))
+		var properties := common.merged(variant, true)
+		if impact_only:
+			properties["event"] = _choice(properties["event"]["enum"].filter(func(event: String) -> bool: return event not in Rules.DOMAIN_EVENTS))
+			properties["scope"] = _choice(properties["scope"]["enum"].filter(func(scope: String) -> bool: return scope not in ["AREA", "MEMBER"]))
+		choices.append(_object(properties, common.keys()))
 	return {"anyOf": choices}
 
 

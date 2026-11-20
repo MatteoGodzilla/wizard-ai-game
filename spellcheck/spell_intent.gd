@@ -2,7 +2,6 @@ extends RefCounted
 
 const Rules = preload("res://spellcheck/magic_rules.gd")
 const SCHEMA_VERSION := 3
-const COMPILER_VERSION := 3
 const FORMS := ["ORB", "BOLT", "BEAM", "ARC", "WAVE", "WARD", "DOMAIN", "RITUAL"]
 const EFFECTS := ["NONE", "BURST", "IGNITE", "BREAK", "ERASE"]
 const PALETTES := {
@@ -40,8 +39,7 @@ static func compile(value: Variant) -> Dictionary:
 	if not value is Dictionary:
 		return {"error": "The intent must be an object."}
 	var intent: Dictionary = value
-	var version: Variant = intent.get("schema_version")
-	if version != 2 and version != SCHEMA_VERSION:
+	if intent.get("schema_version") != SCHEMA_VERSION:
 		return {"error": "The spell intent schema is unsupported."}
 	for key: String in intent:
 		if key not in ["schema_version", "form", "palette", "particle", "effect", "power"] and key not in EXTRA_FIELDS:
@@ -87,7 +85,7 @@ static func compile(value: Variant) -> Dictionary:
 	if not raw_rules is Array or raw_rules.size() > Rules.MAX_RULES:
 		return {"error": "A spell may contain at most five rules."}
 	if raw_rules.is_empty():
-		raw_rules = _legacy_rules(effect, power)
+		raw_rules = _impact_rules(effect, power)
 	var compiled_rules: Array[Dictionary] = []
 	for rule: Variant in raw_rules:
 		var compiled := Rules.compile_rule(rule, form, PALETTES, color)
@@ -144,7 +142,7 @@ static func _compile_beam(raw: Variant) -> Dictionary:
 	return {"anchor": anchor, "lanes": int(lanes), "spacing": float(spacing), "spread": float(spread)}
 
 
-static func _legacy_rules(effect: String, power: int) -> Array:
+static func _impact_rules(effect: String, power: int) -> Array:
 	var rules: Array = []
 	if effect in ["BURST", "IGNITE", "BREAK"]:
 		rules.append({"event": "HIT", "scope": "HIT", "tag": "ANY", "op": "EMIT", "property": "NONE"})

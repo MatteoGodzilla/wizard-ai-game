@@ -4,6 +4,14 @@ Move with **WASD** and aim with the mouse. **Hold Shift** while typing a spell n
 
 ## Launch Spellcheck on Windows
 
+For a quick test, open PowerShell in the repository root and run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start-test.ps1
+```
+
+The launcher starts or reuses Ollama on port `11435`, downloads Gemma 3 4B if needed, and opens the arena. Pass `-Port 11434` to use another local Ollama server. Ollama stays running after the game closes.
+
 Open PowerShell in the repository root, where `project.godot` lives. Use Godot 4.7 (tested with 4.7.2) and Ollama. All eight presets and previously cached spells work offline. For an offline session, skip steps 1 and 2 and run the Godot command in step 3.
 
 1. **Start the local Ollama server.** If the Windows Ollama app is already serving on port `11434`, use that process. Otherwise, start the server in a separate PowerShell window and leave it open. [Ollama for Windows](https://docs.ollama.com/windows)
@@ -46,9 +54,13 @@ Open PowerShell in the repository root, where `project.godot` lives. Use Godot 4
 8. Press **B** and create a spell with an original name and the description **It works like David's Sandevistan from Cyberpunk: Edgerunners.** Prepare it by name, inspect the generated rules, then click and move. Compare it with a spell that explicitly asks to speed up the caster, slow the world, and leave a rainbow trail.
 9. Walk toward the river on the east side. Cross at the bridge, cast **Levitate**, or try **Freeze river water within six meters of me into walkable ice for four seconds** from the bank. **Snowgrave** freezes water in its domain and damages nearby props. **Aqua** extinguishes burning wood and grass on impact.
 
-Gemma receives a compact catalog of engine capabilities and a JSON Schema. It chooses the form, rules, and visuals in one response, with one repair attempt for invalid output. For custom entries it reads the saved description alone, so an arbitrary name can be used to equip the spell. Unintelligible text receives a message in the arena. New entries and validated interpretations are saved to `user://spellcheck_spellbook_v1.json`. Older generations are rebuilt on next equip, with names and descriptions retained.
+Gemma receives a compact catalog of engine capabilities and a JSON Schema. It chooses the form, rules, and visuals in one response, with one repair attempt for invalid output. For custom entries it reads the saved description alone, so an arbitrary name can be used to equip the spell. Unintelligible text receives a message in the arena.
 
-### Spell vocabulary
+## Spellbook storage
+
+Shipped spells live in [seed_spellbook.json](seed_spellbook.json). A successful save creates `spellcheck/local/spellbook.json` inside the project for custom entries and generated definitions. The folder stays local to your checkout. To reset those entries and the cache, close the game and delete that file. Spellcheck reads the current schema only.
+
+## Spell vocabulary
 
 - Rules run at cast, hit, entry, exit, interval, or expiration. They select the caster, an impacted object, a member crossing a domain boundary, nearby or enclosed targets, or the whole arena. Tags can distinguish trees, rocks, timber, grass, projectiles, and burning or scorched terrain.
 - The forest exposes prop tint, rotation, scale, material and integrity, caster and projectile speed, caster hover, arena time, and terrain heat, burning and scorch. Tree placement creates a normal arena prop at the aim point. Timed property edits and membership effects revert independently. World mutations last until another spell changes them or the arena is reset.
@@ -71,4 +83,4 @@ $env:SPELLCHECK_OLLAMA_PORT = '11435' # Use the port of your running Ollama serv
 godot --headless --path . --script res://spellcheck/tests/smoke.gd -- --live
 ```
 
-The test uses a separate save file. It covers offline presets, cache migration, fire and wetness, walking across the river, overlapping ice effects, and world reset. The live suite also exercises reference and plain-language generation, timing, particles, and cache reload with Ollama unavailable. Use `-- --planner` to run just the main live planner cases after the runtime checks.
+The test uses a separate save file inside the project. It covers offline presets, spellbook reload, fire and wetness, walking across the river, overlapping ice effects, and world reset. The live suite also exercises reference and plain-language generation, timing, particles, and cache reload with Ollama unavailable. Use `-- --planner` to run just the main live planner cases after the runtime checks.

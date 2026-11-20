@@ -1,9 +1,8 @@
 extends RefCounted
 
 const Intent = preload("res://spellcheck/spell_intent.gd")
-const Catalog = preload("res://spellcheck/spell_catalog.gd")
 const SEED_PATH := "res://spellcheck/seed_spellbook.json"
-const STORE_VERSION := 1
+const SAVE_PATH := "res://spellcheck/local/spellbook.json"
 const NAME_LIMIT := 100
 const DESCRIPTION_MIN := 10
 const DESCRIPTION_LIMIT := 400
@@ -19,15 +18,13 @@ var _presets: Dictionary = {}
 var _power_anchors: Array[String] = []
 var _whitespace := RegEx.create_from_string("(*UCP)\\s+")
 var _save_path: String
-var _provider_key: String
 var _read_only := false
 
 
-func _init(save_path: String, provider_key: String) -> void:
-	_save_path = save_path
-	_provider_key = provider_key
+func _init(save_path: String = SAVE_PATH) -> void:
+	_save_path = ProjectSettings.globalize_path(save_path)
 	var seed: Variant = _read_json(SEED_PATH)
-	if seed is Dictionary and seed.get("catalog_version") == 1 and seed.get("entries") is Array:
+	if seed is Dictionary and seed.get("entries") is Array:
 		for entry: Variant in seed["entries"]:
 			if _valid_entry(entry) and not _has_name_conflict(entry):
 				_index(entry)
@@ -54,11 +51,11 @@ func _init(save_path: String, provider_key: String) -> void:
 		return
 	var saved: Variant = _read_json(_save_path)
 	if (
-		not saved is Dictionary or saved.get("version") != STORE_VERSION
+		not saved is Dictionary or saved.get("schema_version") != Intent.SCHEMA_VERSION
 		or not saved.get("entries") is Dictionary or not saved.get("resolutions") is Dictionary
 	):
 		_read_only = true
-		warning = "The saved spellbook could not be read. Its file has been preserved."
+		warning = "The saved spellbook is invalid. Delete spellcheck/local/spellbook.json to reset it."
 		return
 	for id: Variant in saved["entries"]:
 		var entry: Variant = saved["entries"][id]
@@ -158,27 +155,16 @@ func ad_hoc(text: String) -> Dictionary:
 
 
 func cached(entry: Dictionary) -> Dictionary:
-	var id: String = entry["entry_id"]
-	var record: Variant = _resolutions.get(id)
-	if not record is Dictionary or record.get("key") != _cache_key(entry):
+	var record: Variant = _resolutions.get(entry["entry_id"])
+	if not record is Dictionary:
 		return {}
 	var intent: Variant = record.get("intent")
-	if not intent is Dictionary or not intent.get("rules", []) is Array:
-		return {}
-	var request: String = entry["name"] if entry["description"].is_empty() else entry["description"]
-	var rules := Catalog.grounded_rules(intent, request)
-	var removed_trail: bool = rules.size() != intent.get("rules", []).size()
-	if removed_trail:
-		if rules.is_empty() and intent.get("form") == "RITUAL":
-			return {}
-		intent = intent.duplicate()
-		intent["rules"] = rules
 	if not Intent.compile(intent).has("spell"):
 		return {}
 	return {
 		"source": "Cache",
 		"intent": intent,
-		"meaning": "" if removed_trail else record.get("meaning", ""),
+		"meaning": record.get("meaning", ""),
 		"reference": record.get("reference", ""),
 		"model": record.get("model", ""),
 	}
@@ -189,30 +175,25 @@ func remember(entry: Dictionary, result: Dictionary) -> bool:
 	if not Intent.compile(intent).has("spell"):
 		return false
 	_resolutions[entry["entry_id"]] = {
-		"key": _cache_key(entry), "intent": intent,
+		"intent": intent,
 		"meaning": result.get("meaning", ""), "model": result.get("model", ""),
 		"reference": result.get("reference", ""),
 	}
 	return _save(_custom, _resolutions)
 
 
-func _cache_key(entry: Dictionary) -> String:
-	var description: String = entry["description"]
-	return "%s/%s/%d/%d/%s" % [
-		entry["entry_id"], description.sha256_text(), Intent.SCHEMA_VERSION,
-		Intent.COMPILER_VERSION, _provider_key,
-	]
-
-
 func _save(custom: Dictionary, resolutions: Dictionary) -> bool:
 	if _read_only:
+		return false
+	var directory_error := DirAccess.make_dir_recursive_absolute(_save_path.get_base_dir())
+	if directory_error != OK and directory_error != ERR_ALREADY_EXISTS:
 		return false
 	var temporary := _save_path + ".tmp"
 	var file := FileAccess.open(temporary, FileAccess.WRITE)
 	if file == null:
 		return false
 	file.store_string(JSON.stringify({
-		"version": STORE_VERSION,
+		"schema_version": Intent.SCHEMA_VERSION,
 		"entries": custom,
 		"resolutions": resolutions,
 	}, "\t"))

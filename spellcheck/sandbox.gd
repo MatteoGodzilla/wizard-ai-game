@@ -5,7 +5,6 @@ const CastingUI = preload("res://spellcheck/casting_ui.gd")
 const Spellbook = preload("res://spellcheck/spellbook.gd")
 const Intent = preload("res://spellcheck/spell_intent.gd")
 const Resolver = preload("res://spellcheck/spell_resolver.gd")
-const SPELLBOOK_PATH := "user://spellcheck_spellbook_v1.json"
 
 var _arena: Arena
 var _ui: CastingUI
@@ -18,7 +17,7 @@ var _failures: Dictionary = {}
 
 
 func _ready() -> void:
-	_book = Spellbook.new(SPELLBOOK_PATH, Resolver.CACHE_IDENTITY)
+	_book = Spellbook.new()
 	_resolver = Resolver.new()
 	_resolver.power_anchors = _book.power_anchors()
 	_resolver.completed.connect(_on_resolved)

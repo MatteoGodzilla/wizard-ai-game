@@ -4,9 +4,11 @@ const Sandbox = preload("res://spellcheck/sandbox.tscn")
 const Spellbook = preload("res://spellcheck/spellbook.gd")
 const Resolver = preload("res://spellcheck/spell_resolver.gd")
 const Intent = preload("res://spellcheck/spell_intent.gd")
+const Catalog = preload("res://spellcheck/spell_catalog.gd")
+const Rules = preload("res://spellcheck/magic_rules.gd")
 
 var _scene
-var _save_path := "user://spellcheck-smoke-%d.json" % OS.get_process_id()
+var _save_path := "res://spellcheck/local/smoke-%d/spellbook.json" % OS.get_process_id()
 var _failures := 0
 
 
@@ -27,6 +29,10 @@ func _run() -> void:
 		_check(not _scene._equipped.is_empty() and _scene._resolver.model_requests == 0, "%s equips without inference" % id)
 	_check(Resolver.decode({"message": {"content": "{}"}}).has("error"), "malformed decision rejected")
 	_check(Intent.compile(Intent.create("ORB", "ORANGE", "SMOKE", "IGNITE", 9)).has("error"), "unsafe power rejected")
+	var old_intent := Intent.create("ORB", "ORANGE", "SMOKE", "IGNITE", 1)
+	old_intent["schema_version"] = 2
+	_check(Intent.compile(old_intent).has("error"), "compiler accepts only the current spell schema")
+	_delivery_schema()
 	_afterimage_policy(book)
 	_scene._open_book()
 	_check(_scene._ui._list.item_count == 8, "unfiltered book shows all entries")
@@ -57,9 +63,11 @@ func _run() -> void:
 	await _river_runtime()
 
 	if "--planner" in OS.get_cmdline_user_args():
+		await _collision_reference_live(book)
 		await _planner_live(book)
 		await _attack_trails_live(book)
 	elif "--live" in OS.get_cmdline_user_args():
+		await _collision_reference_live(book)
 		await _planner_live(book)
 		await _attack_trails_live(book)
 		await _live_examples(book)
@@ -67,8 +75,50 @@ func _run() -> void:
 		await _offline_examples(book)
 	if FileAccess.file_exists(_save_path):
 		DirAccess.remove_absolute(_save_path)
+		DirAccess.remove_absolute(_save_path.get_base_dir())
 	print("Spellcheck smoke failures: %d" % _failures)
 	quit(0 if _failures == 0 else 1)
+
+
+func _delivery_schema() -> void:
+	var schema := Catalog.schema(true)
+	for branch: Dictionary in schema["anyOf"]:
+		var fields: Dictionary = branch["properties"]
+		if not fields.has("rules"):
+			continue
+		for variant: Dictionary in fields["rules"]["items"]["anyOf"]:
+			var options: Dictionary = variant["properties"]
+			for form: String in fields["form"]["enum"]:
+				_check("HIT" not in options["event"]["enum"] or form in Rules.HIT_FORMS, "schema pairs impact rules with an impact form")
+				_check("ENTER" not in options["event"]["enum"] or form == "DOMAIN", "schema pairs membership rules with a domain")
+	var draft := Intent.create("RITUAL", "YELLOW", "NONE", "NONE", 0)
+	draft.erase("schema_version")
+	draft["rules"] = [{"event": "CAST", "scope": "ARENA", "tag": "WOOD", "op": "DAMAGE", "property": "INTEGRITY", "value": 2}]
+	draft.merge({"status": "COMPOSED", "meaning": "Throws a blade that cuts wood on impact.", "reference": ""})
+	var decoded := Resolver.decode({"message": {"content": JSON.stringify(draft)}})
+	_check(decoded.get("repair_impact", false), "a draft that describes throwing an attack triggers an impact-form repair")
+
+
+func _collision_reference_live(book: Spellbook) -> void:
+	var name := "DESTRUCTO DISC"
+	_scene._reset_world()
+	_prepare(name)
+	await _wait_for_resolution()
+	print(_scene._ui._detail.text)
+	_check(book.cached(book.ad_hoc(name)).get("source") == "Cache", "new cutting spell saves a valid generated definition")
+	if _scene._equipped.is_empty():
+		return
+	var arena = _scene._arena
+	_check(_scene._equipped.get("form") in Rules.HIT_FORMS, "cutting spell travels toward its target")
+	_check(arena._projectiles.is_empty() and arena._pending_casts.is_empty(), "preparing a new cutting spell waits for click")
+	var timber := _target_near(Vector3(0, 0, -5), "TIMBER")
+	var before: float = arena._rules.value(timber, "INTEGRITY")
+	arena._player.position = Vector3(0, 0.05, 1)
+	await physics_frame
+	await physics_frame
+	_click_toward(timber.global_position)
+	await create_timer(float(_scene._equipped["charge"]) + 0.8).timeout
+	_check(not is_instance_valid(timber) or float(arena._rules.value(timber, "INTEGRITY")) < before, "casting the generated cutting spell damages a timber target")
 
 
 func _afterimage_policy(book: Spellbook) -> void:
@@ -97,9 +147,9 @@ func _afterimage_policy(book: Spellbook) -> void:
 
 	var attack_entry := book.ad_hoc("Cached eye ray")
 	var mobility_entry := book.ad_hoc("Cached speed boost")
-	_check(book.remember(attack_entry, {"intent": beam}), "an old attack can be saved for the cache test")
+	_check(heat.has("intent") and book.remember(attack_entry, heat), "a generated attack can be saved for the cache test")
 	var cached_attack := book.cached(attack_entry)
-	_check(cached_attack.get("source") == "Cache" and _rule_properties(cached_attack).is_empty() and cached_attack["intent"]["effect"] == "IGNITE", "cached attacks keep their existing effects after caster trails are removed")
+	_check(cached_attack.get("source") == "Cache" and _rule_properties(cached_attack).is_empty() and cached_attack["intent"]["effect"] == "IGNITE", "the cache stores the validated attack")
 	_check(book.remember(mobility_entry, {"intent": direct}) and not book.cached(mobility_entry).is_empty(), "valid cached mobility trails stay available")
 
 
@@ -639,13 +689,9 @@ func _offline_examples(book: Spellbook) -> void:
 	await _wait_for_resolution()
 	_check(_scene._state_for(id) == "ERROR", "unreachable server reports error")
 	_check(_scene._equipped.get("effect") == "IGNITE", "provider failure preserves previous spell")
-	var old := Spellbook.new(_save_path, "structured-spells-v10/" + Resolver.MODEL)
-	_check(old.remember(entry, {"intent": generated}), "old resolver can write a definition")
-	var migrated := Spellbook.new(_save_path, Resolver.CACHE_IDENTITY)
-	_check(migrated.lookup(entry["name"]) == id and migrated.resolution(id).is_empty(), "old cache misses while custom names survive")
-	_check(migrated.entries[id]["description"] == entry["description"], "migration preserves player descriptions")
-	_check(migrated.remember(entry, {"intent": generated}), "valid replacement cache record saves")
-	var reloaded := Spellbook.new(_save_path, Resolver.CACHE_IDENTITY)
+	_check(book.remember(entry, {"intent": generated}), "valid definition saves in the project")
+	var reloaded := Spellbook.new(_save_path)
+	_check(reloaded.lookup(entry["name"]) == id and reloaded.entries[id]["description"] == entry["description"], "custom spell reloads with its description")
 	_check(reloaded.resolution(id).get("source") == "Cache", "new definition survives reload")
 	var file := FileAccess.open(_save_path, FileAccess.READ)
 	if file != null:
@@ -655,14 +701,14 @@ func _offline_examples(book: Spellbook) -> void:
 		file = FileAccess.open(_save_path, FileAccess.WRITE)
 		file.store_string(JSON.stringify(snapshot))
 		file.close()
-		reloaded = Spellbook.new(_save_path, Resolver.CACHE_IDENTITY)
+		reloaded = Spellbook.new(_save_path)
 		_check(reloaded.resolution(id).is_empty(), "invalid cache is ignored")
 
 
 func _launch() -> void:
 	_scene = Sandbox.instantiate()
 	root.add_child(_scene)
-	_scene._book = Spellbook.new(_save_path, Resolver.CACHE_IDENTITY)
+	_scene._book = Spellbook.new(_save_path)
 
 
 func _prepare(spell_name: String) -> void:
