@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://bcefloiuqprvd"]
+
+[ext_resource type="PackedScene" uid="uid://b60ydgh6wb7fc" path="res://Scenes/main_menu_ui.tscn" id="1_t1dhk"]
+[ext_resource type="PackedScene" uid="uid://d2ehitsbxhu5v" path="res://Fantasy_Assets/glTF/Workbench.gltf" id="2_5egv6"]
+[ext_resource type="PackedScene" uid="uid://bkq0t1wx67dr1" path="res://Fantasy_Assets/glTF/BookGroup_Medium_1.gltf" id="3_vtepg"]
+[ext_resource type="PackedScene" uid="uid://doftmj4x8v03w" path="res://Fantasy_Assets/glTF/Banner_1_Cloth.gltf" id="4_8dnnj"]
+[ext_resource type="PackedScene" uid="uid://csi6dml3mru7o" path="res://Fantasy_Assets/glTF/Potion_1.gltf" id="5_m3bi6"]
+[ext_resource type="PackedScene" uid="uid://cd4c84wrxvmw8" path="res://Fantasy_Assets/glTF/Potion_4.gltf" id="6_wyh8j"]
+[ext_resource type="PackedScene" uid="uid://c4pea81gpac66" path="res://Fantasy_Assets/glTF/Scroll_2.gltf" id="7_ujyyl"]
+[ext_resource type="PackedScene" uid="uid://1nwjdmrcmr6h" path="res://Fantasy_Assets/glTF/Book_Stack_1.gltf" id="8_mkpwh"]
+[ext_resource type="PackedScene" uid="uid://de8e7u08yhwnt" path="res://Fantasy_Assets/glTF/Dummy.gltf" id="9_4nkqq"]
+[ext_resource type="PackedScene" uid="uid://dt3ll6fecxnd5" path="res://Fantasy_Assets/glTF/Chandelier.gltf" id="10_ehtkc"]
+[ext_resource type="PackedScene" uid="uid://bk5o5j5fmqtcv" path="res://Fantasy_Assets/glTF/Bookcase_2.gltf" id="11_6dk6o"]
+[ext_resource type="PackedScene" uid="uid://cjt1345slvjw7" path="res://Fantasy_Assets/glTF/Shelf_Arch.gltf" id="12_jr6u5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x15ge"]
+albedo_color = Color(0.5058824, 0.45882353, 0.5529412, 1)
+
+[node name="MainMenu" type="Node3D" unique_id=1130275169]
+
+[node name="main_menu_ui" parent="." unique_id=1630175775 instance=ExtResource("1_t1dhk")]
+
+[node name="Decoration" type="Node3D" parent="." unique_id=2132429358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.047729492, 0, 0.15440464)
+
+[node name="Workbench2" parent="Decoration" unique_id=1022298663 instance=ExtResource("2_5egv6")]
+
+[node name="BookGroup_Medium_12" parent="Decoration" unique_id=1499047919 instance=ExtResource("3_vtepg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.464, 0.887, -0.376)
+
+[node name="Banner_1_Cloth2" parent="Decoration" unique_id=383227861 instance=ExtResource("4_8dnnj")]
+transform = Transform3D(0.39853454, 0, -0.91715336, 0, 1, 0, 0.91715336, 0, 0.39853454, 2.0980628, 2.4892948, -0.9222238)
+
+[node name="Potion_12" parent="Decoration" unique_id=1011967202 instance=ExtResource("5_m3bi6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4927541, 0.8870001, 0.0502429)
+
+[node name="Potion_42" parent="Decoration" unique_id=344980482 instance=ExtResource("6_wyh8j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6070937, 0.887, 0.13347599)
+
+[node name="Scroll_22" parent="Decoration" unique_id=1958978352 instance=ExtResource("7_ujyyl")]
+transform = Transform3D(0.8283407, 0, 0.5602246, 0, 1, 0, -0.5602246, 0, 0.8283407, 0.43923104, 0.8870001, 0.0513857)
+
+[node name="Book_Stack_12" parent="Decoration" unique_id=1048724680 instance=ExtResource("8_mkpwh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018208832, 0.887, 0.20700002)
+
+[node name="Dummy2" parent="Decoration" unique_id=1339475156 instance=ExtResource("9_4nkqq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.989534, 0, -2.4428375)
+
+[node name="Chandelier2" parent="Decoration" unique_id=173567904 instance=ExtResource("10_ehtkc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.605042, -1.5643394)
+
+[node name="Bookcase_22" parent="Decoration" unique_id=1802229184 instance=ExtResource("11_6dk6o")]
+transform = Transform3D(0.43811217, 0, 0.8989203, 0, 1, 0, -0.8989203, 0, 0.43811217, -2.0129776, 0, -1.6232612)
+
+[node name="Shelf_Arch2" parent="Decoration" unique_id=1033335844 instance=ExtResource("12_jr6u5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2348051, 0, -3.239026)
+
+[node name="Bookcase_23" parent="Decoration" unique_id=323792016 instance=ExtResource("11_6dk6o")]
+transform = Transform3D(0.24012539, 0, -0.97074187, 0, 1, 0, 0.97074187, 0, 0.24012539, 2.2018785, 0, -2.5173495)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1999784928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06794047, 1.1462255, 0.9682331)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=797846377]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6515665, 0, 1.3981562)
+material = SubResource("StandardMaterial3D_x15ge")

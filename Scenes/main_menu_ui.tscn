@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://b60ydgh6wb7fc"]
+
+[ext_resource type="Script" uid="uid://cvf7qor7xxpbg" path="res://Scripts/main_menu_ui.gd" id="1_ugr05"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1gix"]
+bg_color = Color(0.64705884, 0.5647059, 0.5254902, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ugr05"]
+bg_color = Color(0.5058824, 0.45882353, 0.5529412, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q4h2x"]
+bg_color = Color(0.64705884, 0.5647059, 0.5254902, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3gcb"]
+bg_color = Color(0.5058824, 0.45882353, 0.5529412, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="main_menu_ui" type="Control" unique_id=1630175775]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ugr05")
+
+[node name="Label" type="Label" parent="." unique_id=1754392552]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -41.0
+offset_top = 87.0
+offset_right = 41.0
+offset_bottom = 110.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 57
+text = "Spellcheck"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2004142006]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -63.5
+offset_top = 89.0
+offset_right = 63.5
+offset_bottom = 171.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=1422444186]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_m1gix")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_m1gix")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ugr05")
+text = "Play"
+
+[node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=1974242675]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_q4h2x")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_q4h2x")
+theme_override_styles/hover = SubResource("StyleBoxFlat_v3gcb")
+text = "Quit"
+
+[connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

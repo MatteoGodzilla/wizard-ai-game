@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://cvro2y7vkh568"]
+
+[ext_resource type="Script" uid="uid://d3sa05o36drt" path="res://spell_maker_ui.gd" id="1_bnskj"]
+
+[node name="SpellMakerUi" type="Control" unique_id=826777757]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bnskj")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1496552351]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -132.0
+offset_top = 49.0
+offset_right = 138.0
+offset_bottom = 133.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="SpellPromt" type="Label" parent="VBoxContainer" unique_id=1866326816]
+layout_mode = 2
+text = "What spell are you going to cook..."
+
+[node name="SpellTextInput" type="LineEdit" parent="VBoxContainer" unique_id=1649170480]
+layout_mode = 2
+size_flags_vertical = 3
