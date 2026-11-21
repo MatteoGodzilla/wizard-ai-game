@@ -1,6 +1,6 @@
 extends Node # NEVER FUCKING REMOVE THIS, I SWEAR TO GOD
 
-enum Spell{
+enum Element{
 	AQUA,
 	AER,
 	IGNIS,
@@ -12,26 +12,38 @@ enum Spell{
 	INVALID # REMEMBER TO FILTER THIS WHEN RANDOMIZING VALUES
 }
 
+var valid_elements: Array[Element] = [
+	Element.AQUA,
+	Element.AER,
+	Element.IGNIS,
+	Element.TERRA,
+	Element.LUX,
+	Element.TENEBRAE,
+	Element.CORPUS,
+	Element.ARCANUM
+]
+
+
 func string_to_spell(s: String):
 	match s:
-		"Aqua": return Spell.AQUA
-		"Aer": return Spell.AER
-		"Ignis": return Spell.IGNIS
-		"Terra": return Spell.TERRA
-		"Lux": return Spell.LUX
-		"Tenebrae": return Spell.TENEBRAE
-		"Corpus": return Spell.CORPUS
-		"Arcanum": return Spell.ARCANUM
-		_: return Spell.INVALID
+		"Aqua": return Element.AQUA
+		"Aer": return Element.AER
+		"Ignis": return Element.IGNIS
+		"Terra": return Element.TERRA
+		"Lux": return Element.LUX
+		"Tenebrae": return Element.TENEBRAE
+		"Corpus": return Element.CORPUS
+		"Arcanum": return Element.ARCANUM
+		_: return Element.INVALID
 
-func spell_to_string(spell: Spell):
+func spell_to_string(spell: Element):
 	match spell:
-		Spell.AQUA: return "Aqua"
-		Spell.AER: return "Aer"
-		Spell.IGNIS: return "Ignis"
-		Spell.TERRA: return "Terra"
-		Spell.LUX: return "Lux"
-		Spell.TENEBRAE: return "Tenebrae"
-		Spell.CORPUS: return "Corpus"
-		Spell.ARCANUM: return "Arcanum"
+		Element.AQUA: return "Aqua"
+		Element.AER: return "Aer"
+		Element.IGNIS: return "Ignis"
+		Element.TERRA: return "Terra"
+		Element.LUX: return "Lux"
+		Element.TENEBRAE: return "Tenebrae"
+		Element.CORPUS: return "Corpus"
+		Element.ARCANUM: return "Arcanum"
 		_: return ""

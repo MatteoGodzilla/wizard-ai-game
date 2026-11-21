@@ -2,12 +2,18 @@
 
 [ext_resource type="Script" uid="uid://npyum54l57pr" path="res://Scripts/cast_typer.gd" id="1_ihy57"]
 [ext_resource type="Script" uid="uid://dxy3nleql3xtp" path="res://Scripts/cast_typer_test.gd" id="2_26m1g"]
+[ext_resource type="Script" uid="uid://doqrjsfdqb2dj" path="res://Scripts/element_input.gd" id="2_bt7gh"]
 [ext_resource type="Script" uid="uid://7j4fkr5ek5jg" path="res://Scripts/UITest.gd" id="3_ryy0t"]
 
 [node name="Node2D" type="Node2D" unique_id=213238332]
 
-[node name="CastTyper" type="Node" parent="." unique_id=906152024]
+[node name="CastTyper" type="Node" parent="." unique_id=906152024 node_paths=PackedStringArray("element_input")]
 script = ExtResource("1_ihy57")
+element_input = NodePath("../ElementInput")
+
+[node name="ElementInput" type="Node" parent="." unique_id=1695577540]
+script = ExtResource("2_bt7gh")
+metadata/_custom_type_script = "uid://doqrjsfdqb2dj"
 
 [node name="CastTyperTest" type="Node" parent="." unique_id=1590826190 node_paths=PackedStringArray("typer")]
 script = ExtResource("2_26m1g")
