@@ -1,0 +1,108 @@
+[gd_scene format=3 uid="uid://bcefloiuqprvd"]
+
+[ext_resource type="PackedScene" uid="uid://d2ehitsbxhu5v" path="res://Fantasy_Assets/glTF/Workbench.gltf" id="1_55dxo"]
+[ext_resource type="PackedScene" uid="uid://bkq0t1wx67dr1" path="res://Fantasy_Assets/glTF/BookGroup_Medium_1.gltf" id="2_8280k"]
+[ext_resource type="PackedScene" uid="uid://doftmj4x8v03w" path="res://Fantasy_Assets/glTF/Banner_1_Cloth.gltf" id="3_e1n7j"]
+[ext_resource type="PackedScene" uid="uid://csi6dml3mru7o" path="res://Fantasy_Assets/glTF/Potion_1.gltf" id="4_psa8t"]
+[ext_resource type="PackedScene" uid="uid://cd4c84wrxvmw8" path="res://Fantasy_Assets/glTF/Potion_4.gltf" id="5_c2ypy"]
+[ext_resource type="PackedScene" uid="uid://c4pea81gpac66" path="res://Fantasy_Assets/glTF/Scroll_2.gltf" id="6_5druq"]
+[ext_resource type="PackedScene" uid="uid://1nwjdmrcmr6h" path="res://Fantasy_Assets/glTF/Book_Stack_1.gltf" id="7_2ie8o"]
+[ext_resource type="PackedScene" uid="uid://de8e7u08yhwnt" path="res://Fantasy_Assets/glTF/Dummy.gltf" id="8_v5gaw"]
+[ext_resource type="PackedScene" uid="uid://dt3ll6fecxnd5" path="res://Fantasy_Assets/glTF/Chandelier.gltf" id="9_djmag"]
+[ext_resource type="PackedScene" uid="uid://bk5o5j5fmqtcv" path="res://Fantasy_Assets/glTF/Bookcase_2.gltf" id="10_itcin"]
+[ext_resource type="PackedScene" uid="uid://cjt1345slvjw7" path="res://Fantasy_Assets/glTF/Shelf_Arch.gltf" id="11_i75j7"]
+[ext_resource type="PackedScene" uid="uid://ci7giqg3ucgd3" path="res://Fantasy_Assets/Medieval_Village_Assets/glTF/Roof_RoundTiles_6x6.gltf" id="12_kqmhu"]
+[ext_resource type="PackedScene" uid="uid://cdyxtrlp2p3ob" path="res://Fantasy_Assets/used_assets/wall_uneven_brick_straight_2.tscn" id="13_ejbup"]
+[ext_resource type="PackedScene" uid="uid://7ekw7u2c2c3b" path="res://Fantasy_Assets/glTF/Candle_2.gltf" id="14_2yhbv"]
+[ext_resource type="PackedScene" uid="uid://duww5rohm2gqj" path="res://Fantasy_Assets/Medieval_Village_Assets/glTF/Roof_Front_Brick6.gltf" id="15_jfeqi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x15ge"]
+albedo_color = Color(0.5058824, 0.45882353, 0.5529412, 1)
+
+[node name="MainMenu" type="Node3D" unique_id=1130275169]
+
+[node name="Decoration" type="Node3D" parent="." unique_id=2132429358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.047729492, 0, 0.15440464)
+
+[node name="Workbench2" parent="Decoration" unique_id=1022298663 instance=ExtResource("1_55dxo")]
+
+[node name="BookGroup_Medium_12" parent="Decoration" unique_id=1499047919 instance=ExtResource("2_8280k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.464, 0.887, -0.376)
+
+[node name="Banner_1_Cloth2" parent="Decoration" unique_id=383227861 instance=ExtResource("3_e1n7j")]
+transform = Transform3D(0.39853454, 0, -0.91715336, 0, 1, 0, 0.91715336, 0, 0.39853454, 2.0980628, 2.4892948, -0.9222238)
+
+[node name="Potion_12" parent="Decoration" unique_id=1011967202 instance=ExtResource("4_psa8t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4927541, 0.8870001, 0.0502429)
+
+[node name="Potion_42" parent="Decoration" unique_id=344980482 instance=ExtResource("5_c2ypy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6070937, 0.887, 0.13347599)
+
+[node name="Scroll_22" parent="Decoration" unique_id=1958978352 instance=ExtResource("6_5druq")]
+transform = Transform3D(0.8283407, 0, 0.5602246, 0, 1, 0, -0.5602246, 0, 0.8283407, 0.43923104, 0.8870001, 0.0513857)
+
+[node name="Book_Stack_12" parent="Decoration" unique_id=1048724680 instance=ExtResource("7_2ie8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.02094087, 0.887, 0.20700002)
+
+[node name="Dummy2" parent="Decoration" unique_id=1339475156 instance=ExtResource("8_v5gaw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.989534, 0, -2.4428375)
+
+[node name="Chandelier2" parent="Decoration" unique_id=173567904 instance=ExtResource("9_djmag")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.605042, -1.5643394)
+
+[node name="Bookcase_22" parent="Decoration" unique_id=1802229184 instance=ExtResource("10_itcin")]
+transform = Transform3D(0.43811217, 0, 0.8989203, 0, 1, 0, -0.8989203, 0, 0.43811217, -2.0129776, 0, -1.6232612)
+
+[node name="Shelf_Arch2" parent="Decoration" unique_id=1033335844 instance=ExtResource("11_i75j7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2348051, 0, -3.239026)
+
+[node name="Bookcase_23" parent="Decoration" unique_id=323792016 instance=ExtResource("10_itcin")]
+transform = Transform3D(0.24012539, 0, -0.97074187, 0, 1, 0, 0.97074187, 0, 0.24012539, 2.2018785, 0, -2.5173495)
+
+[node name="Node3D" type="Node3D" parent="Decoration" unique_id=1415539441]
+
+[node name="Roof_RoundTiles_6x62" parent="Decoration/Node3D" unique_id=24452059 instance=ExtResource("12_kqmhu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.047729492, 3.4664896, -2.2435296)
+
+[node name="Wall_UnevenBrick_Straight2" parent="Decoration/Node3D" unique_id=1087723393 instance=ExtResource("13_ejbup")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.9245691, 0, -1.141884)
+
+[node name="Wall_UnevenBrick_Straight3" parent="Decoration/Node3D" unique_id=990946022 instance=ExtResource("13_ejbup")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.9245691, 0, -3.1407585)
+
+[node name="Wall_UnevenBrick_Straight7" parent="Decoration/Node3D" unique_id=1043080999 instance=ExtResource("13_ejbup")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 3.083194, 0, -1.141884)
+
+[node name="Wall_UnevenBrick_Straight8" parent="Decoration/Node3D" unique_id=981493672 instance=ExtResource("13_ejbup")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 3.083194, 0, -3.1407585)
+
+[node name="Wall_UnevenBrick_Straight4" parent="Decoration/Node3D" unique_id=1882427299 instance=ExtResource("13_ejbup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9348598, 0, -4.093686)
+
+[node name="Wall_UnevenBrick_Straight5" parent="Decoration/Node3D" unique_id=1422898734 instance=ExtResource("13_ejbup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06401497, 0, -4.093686)
+
+[node name="Wall_UnevenBrick_Straight6" parent="Decoration/Node3D" unique_id=1351705980 instance=ExtResource("13_ejbup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0594451, 0, -4.093686)
+
+[node name="Candle_22" parent="Decoration" unique_id=511667736 instance=ExtResource("14_2yhbv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38164702, 0.8532859, 0.35565948)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1999784928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06794047, 1.1462255, 0.9682331)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=797846377]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6515665, 0, 1.3981562)
+material = SubResource("StandardMaterial3D_x15ge")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=305152239]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.04987058, 4.516277, -1.3573729)
+light_color = Color(0.9984799, 0.8105265, 0.66003317, 1)
+light_energy = 5.486
+
+[node name="Roof_Front_Brick62" parent="." unique_id=433908396 instance=ExtResource("15_jfeqi")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06625599, 3.0377147, -4.0984335)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=613967732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38164702, 1.1137602, 0.51907074)
+light_color = Color(0.90914416, 0.5788705, 0.28741878, 1)

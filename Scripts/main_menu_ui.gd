@@ -1,7 +1,6 @@
 extends Control
 
 @export_group ("Scenes")
-@export var main_scene: PackedScene
 @export var next_scene: PackedScene
 
 func _on_play_button_pressed() -> void:

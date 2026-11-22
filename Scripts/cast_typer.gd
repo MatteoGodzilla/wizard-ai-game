@@ -33,6 +33,8 @@ func _check_typed_spell(typed: Enums.Spell):
 	update_graphics.emit(_idx_to_type)
 
 func _input(event: InputEvent) -> void:
+	if !_is_challenge_active: 
+		return
 	var typed_by_player : Enums.Spell
 	# There has to be a better way for this
 	if Input.is_action_just_pressed("Aqua"):

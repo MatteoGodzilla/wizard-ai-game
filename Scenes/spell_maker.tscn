@@ -1,3 +1,9 @@
 [gd_scene format=3 uid="uid://dhwx8j821h2eb"]
 
+[ext_resource type="PackedScene" uid="uid://co822d8wd80xe" path="res://Fantasy_Assets/glTF/Anvil.gltf" id="1_iiqng"]
+
 [node name="SpellMaker" type="Node3D" unique_id=1164320167]
+
+[node name="Node3D" type="Node3D" parent="." unique_id=218836442]
+
+[node name="Anvil2" parent="Node3D" unique_id=1107227097 instance=ExtResource("1_iiqng")]

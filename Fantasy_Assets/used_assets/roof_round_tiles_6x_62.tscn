@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://c0a53c4wicxef"]
+
+[ext_resource type="PackedScene" uid="uid://ci7giqg3ucgd3" path="res://Fantasy_Assets/Medieval_Village_Assets/glTF/Roof_RoundTiles_6x6.gltf" id="1_tx76s"]
+
+[node name="Roof_RoundTiles_6x62" unique_id=24452059 instance=ExtResource("1_tx76s")]

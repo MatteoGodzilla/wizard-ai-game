@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://d0fkkcvlb667k"]
+
+[ext_resource type="PackedScene" uid="uid://c4pea81gpac66" path="res://Fantasy_Assets/glTF/Scroll_2.gltf" id="1_2sfyt"]
+
+[node name="Scroll_22" unique_id=1958978352 instance=ExtResource("1_2sfyt")]

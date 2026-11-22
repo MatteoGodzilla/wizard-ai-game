@@ -1,66 +1,112 @@
-[gd_scene format=3 uid="uid://bcefloiuqprvd"]
+[gd_scene format=3 uid="uid://b60ydgh6wb7fc"]
 
-[ext_resource type="PackedScene" uid="uid://b60ydgh6wb7fc" path="res://Scenes/main_menu_ui.tscn" id="1_t1dhk"]
-[ext_resource type="PackedScene" uid="uid://d2ehitsbxhu5v" path="res://Fantasy_Assets/glTF/Workbench.gltf" id="2_5egv6"]
-[ext_resource type="PackedScene" uid="uid://bkq0t1wx67dr1" path="res://Fantasy_Assets/glTF/BookGroup_Medium_1.gltf" id="3_vtepg"]
-[ext_resource type="PackedScene" uid="uid://doftmj4x8v03w" path="res://Fantasy_Assets/glTF/Banner_1_Cloth.gltf" id="4_8dnnj"]
-[ext_resource type="PackedScene" uid="uid://csi6dml3mru7o" path="res://Fantasy_Assets/glTF/Potion_1.gltf" id="5_m3bi6"]
-[ext_resource type="PackedScene" uid="uid://cd4c84wrxvmw8" path="res://Fantasy_Assets/glTF/Potion_4.gltf" id="6_wyh8j"]
-[ext_resource type="PackedScene" uid="uid://c4pea81gpac66" path="res://Fantasy_Assets/glTF/Scroll_2.gltf" id="7_ujyyl"]
-[ext_resource type="PackedScene" uid="uid://1nwjdmrcmr6h" path="res://Fantasy_Assets/glTF/Book_Stack_1.gltf" id="8_mkpwh"]
-[ext_resource type="PackedScene" uid="uid://de8e7u08yhwnt" path="res://Fantasy_Assets/glTF/Dummy.gltf" id="9_4nkqq"]
-[ext_resource type="PackedScene" uid="uid://dt3ll6fecxnd5" path="res://Fantasy_Assets/glTF/Chandelier.gltf" id="10_ehtkc"]
-[ext_resource type="PackedScene" uid="uid://bk5o5j5fmqtcv" path="res://Fantasy_Assets/glTF/Bookcase_2.gltf" id="11_6dk6o"]
-[ext_resource type="PackedScene" uid="uid://cjt1345slvjw7" path="res://Fantasy_Assets/glTF/Shelf_Arch.gltf" id="12_jr6u5"]
+[ext_resource type="Script" uid="uid://cvf7qor7xxpbg" path="res://Scripts/main_menu_ui.gd" id="1_1ehe0"]
+[ext_resource type="PackedScene" uid="uid://bf3ob6aaqc5u0" path="res://Scenes/test/casting-controls-test.tscn" id="2_wyh8j"]
+[ext_resource type="Texture2D" uid="uid://c4cnoddofen5m" path="res://Fantasy_Assets/images/menu_bg2.jpg" id="3_ce3w2"]
+[ext_resource type="FontFile" uid="uid://b4osf2cpdx0fi" path="res://Fantasy_Assets/font/Catholicon.ttf" id="3_n45e2"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x15ge"]
-albedo_color = Color(0.5058824, 0.45882353, 0.5529412, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k0akp"]
+texture = ExtResource("3_ce3w2")
 
-[node name="MainMenu" type="Node3D" unique_id=1130275169]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1gix"]
+bg_color = Color(0.36862746, 0.23137255, 0.11372549, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
-[node name="main_menu_ui" parent="." unique_id=1630175775 instance=ExtResource("1_t1dhk")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ugr05"]
+bg_color = Color(0.3019608, 0.19607843, 0.14901961, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
-[node name="Decoration" type="Node3D" parent="." unique_id=2132429358]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.047729492, 0, 0.15440464)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q4h2x"]
+bg_color = Color(0.36862746, 0.23137255, 0.11372549, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
-[node name="Workbench2" parent="Decoration" unique_id=1022298663 instance=ExtResource("2_5egv6")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3gcb"]
+bg_color = Color(0.3019608, 0.19607843, 0.14901961, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
-[node name="BookGroup_Medium_12" parent="Decoration" unique_id=1499047919 instance=ExtResource("3_vtepg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.464, 0.887, -0.376)
+[node name="main_menu_ui" type="Control" unique_id=1630175775]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1ehe0")
+next_scene = ExtResource("2_wyh8j")
 
-[node name="Banner_1_Cloth2" parent="Decoration" unique_id=383227861 instance=ExtResource("4_8dnnj")]
-transform = Transform3D(0.39853454, 0, -0.91715336, 0, 1, 0, 0.91715336, 0, 0.39853454, 2.0980628, 2.4892948, -0.9222238)
+[node name="Panel" type="Panel" parent="." unique_id=365559070]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_k0akp")
 
-[node name="Potion_12" parent="Decoration" unique_id=1011967202 instance=ExtResource("5_m3bi6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4927541, 0.8870001, 0.0502429)
+[node name="Label" type="Label" parent="." unique_id=1754392552]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -41.0
+offset_top = 87.0
+offset_right = 41.0
+offset_bottom = 110.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("3_n45e2")
+theme_override_font_sizes/font_size = 57
+text = "Spellcheck"
 
-[node name="Potion_42" parent="Decoration" unique_id=344980482 instance=ExtResource("6_wyh8j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6070937, 0.887, 0.13347599)
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2004142006]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -57.0
+offset_top = 136.0
+offset_right = 70.0
+offset_bottom = 252.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
 
-[node name="Scroll_22" parent="Decoration" unique_id=1958978352 instance=ExtResource("7_ujyyl")]
-transform = Transform3D(0.8283407, 0, 0.5602246, 0, 1, 0, -0.5602246, 0, 0.8283407, 0.43923104, 0.8870001, 0.0513857)
+[node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=1422444186]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_n45e2")
+theme_override_font_sizes/font_size = 21
+theme_override_styles/normal = SubResource("StyleBoxFlat_m1gix")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_m1gix")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ugr05")
+text = "Play"
 
-[node name="Book_Stack_12" parent="Decoration" unique_id=1048724680 instance=ExtResource("8_mkpwh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018208832, 0.887, 0.20700002)
+[node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=1974242675]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_n45e2")
+theme_override_font_sizes/font_size = 21
+theme_override_styles/normal = SubResource("StyleBoxFlat_q4h2x")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_q4h2x")
+theme_override_styles/hover = SubResource("StyleBoxFlat_v3gcb")
+text = "Quit"
 
-[node name="Dummy2" parent="Decoration" unique_id=1339475156 instance=ExtResource("9_4nkqq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.989534, 0, -2.4428375)
-
-[node name="Chandelier2" parent="Decoration" unique_id=173567904 instance=ExtResource("10_ehtkc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.605042, -1.5643394)
-
-[node name="Bookcase_22" parent="Decoration" unique_id=1802229184 instance=ExtResource("11_6dk6o")]
-transform = Transform3D(0.43811217, 0, 0.8989203, 0, 1, 0, -0.8989203, 0, 0.43811217, -2.0129776, 0, -1.6232612)
-
-[node name="Shelf_Arch2" parent="Decoration" unique_id=1033335844 instance=ExtResource("12_jr6u5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2348051, 0, -3.239026)
-
-[node name="Bookcase_23" parent="Decoration" unique_id=323792016 instance=ExtResource("11_6dk6o")]
-transform = Transform3D(0.24012539, 0, -0.97074187, 0, 1, 0, 0.97074187, 0, 0.24012539, 2.2018785, 0, -2.5173495)
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1999784928]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06794047, 1.1462255, 0.9682331)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=797846377]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6515665, 0, 1.3981562)
-material = SubResource("StandardMaterial3D_x15ge")
+[connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

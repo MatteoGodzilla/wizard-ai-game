@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://dm3jh4f7t6fy2"]
+
+[ext_resource type="PackedScene" uid="uid://csi6dml3mru7o" path="res://Fantasy_Assets/glTF/Potion_1.gltf" id="1_3kxp4"]
+
+[node name="Potion_12" unique_id=1011967202 instance=ExtResource("1_3kxp4")]

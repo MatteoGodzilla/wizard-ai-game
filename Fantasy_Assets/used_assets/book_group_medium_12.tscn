@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://ho77nanfj33r"]
+
+[ext_resource type="PackedScene" uid="uid://bkq0t1wx67dr1" path="res://Fantasy_Assets/glTF/BookGroup_Medium_1.gltf" id="1_ogs02"]
+
+[node name="BookGroup_Medium_12" unique_id=1499047919 instance=ExtResource("1_ogs02")]
