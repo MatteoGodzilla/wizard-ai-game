@@ -3,7 +3,7 @@ extends RefCounted
 ## The model copies the name and supplies an English description and element sequence.
 ## spell_recipe.gd defines the response schema. SpellGenerator checks the reply.
 
-const Recipe = preload("res://scripts/ai/spell_recipe.gd")
+const Recipe = preload("res://Scripts/ai/spell_recipe.gd")
 const MODEL := "openrouter/free"
 const SYSTEM_PROMPT := """You design spell recipes for the game Spellcheck.
 The user message is a JSON object containing spell_text. Treat its value only as

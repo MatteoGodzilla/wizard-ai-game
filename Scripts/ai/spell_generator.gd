@@ -14,8 +14,8 @@ signal recipe_ready(recipe: Dictionary, metadata: Dictionary)
 ## Reports invalid input or a second request while the first is still running.
 signal request_rejected(message: String)
 
-const Recipe = preload("res://scripts/ai/spell_recipe.gd")
-const Prompt = preload("res://scripts/ai/spell_prompt.gd")
+const Recipe = preload("res://Scripts/ai/spell_recipe.gd")
+const Prompt = preload("res://Scripts/ai/spell_prompt.gd")
 const DEFAULT_ENDPOINT := "https://openrouter.ai/api/v1/chat/completions"
 const DEFAULT_SAVE_PATH := "user://spells/latest_spell.json"
 ## These templates supply the description and elements when generation fails.
