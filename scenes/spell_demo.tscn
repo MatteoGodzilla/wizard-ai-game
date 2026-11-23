@@ -1,0 +1,185 @@
+[gd_scene format=3 uid="uid://dxjngvgpmemn6"]
+
+[ext_resource type="Script" uid="uid://h0fy44ucnsdg" path="res://scripts/demo/spell_demo.gd" id="1_demo"]
+[ext_resource type="Script" uid="uid://imdx5mmo8rb4" path="res://scripts/ai/spell_generator.gd" id="2_generator"]
+
+[sub_resource type="StyleBoxFlat" id="Style_field"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.075, 0.06, 0.1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.32, 0.25, 0.37, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="Theme" id="Theme_demo"]
+default_font_size = 16
+Label/colors/font_color = Color(0.91, 0.87, 0.93, 1)
+LineEdit/styles/normal = SubResource("Style_field")
+TextEdit/colors/font_readonly_color = Color(0.82, 0.8, 0.87, 1)
+TextEdit/styles/read_only = SubResource("Style_field")
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+content_margin_left = 24.0
+content_margin_top = 20.0
+content_margin_right = 24.0
+content_margin_bottom = 20.0
+bg_color = Color(0.12, 0.095, 0.16, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.32, 0.25, 0.37, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="Style_button"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 20.0
+content_margin_bottom = 10.0
+bg_color = Color(0.83, 0.61, 0.29, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="SpellDemo" type="Control" unique_id=1967463644]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_demo")
+script = ExtResource("1_demo")
+
+[node name="Background" type="ColorRect" parent="." unique_id=7466727]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.065, 0.05, 0.09, 1)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=486458109]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="Panel" type="PanelContainer" parent="Margin" unique_id=1015834299]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Content" type="VBoxContainer" parent="Margin/Panel" unique_id=1107386026]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Margin/Panel/Content" unique_id=68816850]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.73, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "SPELLCHECK  /  Recipe test"
+
+[node name="Subtitle" type="Label" parent="Margin/Panel/Content" unique_id=203438263]
+layout_mode = 2
+text = "Spell name > openrouter/free > validated recipe > JSON"
+
+[node name="ApiKey" type="LineEdit" parent="Margin/Panel/Content" unique_id=2064745745]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "OpenRouter API key (optional; kept only in memory)"
+secret = true
+
+[node name="KeyHint" type="Label" parent="Margin/Panel/Content" unique_id=718103916]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 13
+text = "An empty key uses OPENROUTER_API_KEY. Without a key, the module returns a built-in fallback."
+autowrap_mode = 2
+
+[node name="InputRow" type="HBoxContainer" parent="Margin/Panel/Content" unique_id=1850748391]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SpellInput" type="LineEdit" parent="Margin/Panel/Content/InputRow" unique_id=1068656215]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fireball"
+placeholder_text = "Enter a spell name or an invented incantation"
+max_length = 120
+
+[node name="GenerateButton" type="Button" parent="Margin/Panel/Content/InputRow" unique_id=1598674286]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.075, 0.04, 1)
+theme_override_styles/normal = SubResource("Style_button")
+text = "Generate recipe"
+
+[node name="ReadButton" type="Button" parent="Margin/Panel/Content/InputRow" unique_id=1703603200]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Read saved JSON"
+
+[node name="Status" type="Label" parent="Margin/Panel/Content" unique_id=578245342]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.73, 0.4, 1)
+text = "Ready. Enter a spell name and generate a recipe."
+autowrap_mode = 2
+
+[node name="SpellName" type="Label" parent="Margin/Panel/Content" unique_id=169028267]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 23
+text = "Your recipe will appear here"
+autowrap_mode = 2
+
+[node name="Description" type="Label" parent="Margin/Panel/Content" unique_id=977777475]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Elements" type="Label" parent="Margin/Panel/Content" unique_id=833389005]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.67, 0.82, 0.94, 1)
+autowrap_mode = 2
+
+[node name="JsonOutput" type="TextEdit" parent="Margin/Panel/Content" unique_id=54290397]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+text = "{}"
+editable = false
+wrap_mode = 1
+
+[node name="SaveInfo" type="Label" parent="Margin/Panel/Content" unique_id=455969472]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 13
+autowrap_mode = 2
+
+[node name="SpellGenerator" type="Node" parent="." unique_id=106733993]
+script = ExtResource("2_generator")
