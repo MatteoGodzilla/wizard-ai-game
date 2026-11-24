@@ -2,7 +2,7 @@ class_name CastTyperTest
 extends Node
 
 # For testing the history of spells
-signal spell_generated(spell_list: Array[Enums.Spell])
+signal spell_generated(spell_list: Array[Enums.Element])
 
 @export var typer: CastTyper
 

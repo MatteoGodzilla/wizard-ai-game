@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://npyum54l57pr" path="res://Scripts/cast_typer.gd" id="1_ihy57"]
 [ext_resource type="Script" uid="uid://dxy3nleql3xtp" path="res://Scripts/cast_typer_test.gd" id="2_26m1g"]
+[ext_resource type="Script" uid="uid://doqrjsfdqb2dj" path="res://Scripts/element_input.gd" id="2_bt7gh"]
 [ext_resource type="PackedScene" uid="uid://cvro2y7vkh568" path="res://Scenes/spell_maker_ui.tscn" id="4_spellui"]
 [ext_resource type="Texture2D" uid="uid://bysrt5h5xltvh" path="res://Fantasy_Assets/Element_Images/Aqua.png" id="5_savvf"]
 [ext_resource type="Texture2D" uid="uid://wy1k8e5rnyvq" path="res://Fantasy_Assets/Element_Images/ignis.png" id="6_4pta1"]
@@ -12,7 +13,6 @@
 [ext_resource type="Texture2D" uid="uid://qu153rkiiqyi" path="res://Fantasy_Assets/Element_Images/Corpus.png" id="11_2fv61"]
 [ext_resource type="Texture2D" uid="uid://b8vrjduduh5b3" path="res://Fantasy_Assets/Element_Images/Arcanum.png" id="12_2pmli"]
 [ext_resource type="PackedScene" uid="uid://ca1xy5l67xvay" path="res://Scenes/options_ui.tscn" id="12_savvf"]
-[ext_resource type="PackedScene" uid="uid://b60ydgh6wb7fc" path="res://Scenes/main_menu.tscn" id="13_p0c1n"]
 
 [node name="Node2D" type="Node2D" unique_id=213238332]
 
@@ -33,8 +33,11 @@ custom_minimum_size = Vector2(177.875, 79.915)
 layout_mode = 3
 anchors_preset = 0
 offset_top = 1.0
-offset_right = 1152.0
-offset_bottom = 647.0
+offset_right = 1099.0
+offset_bottom = 777.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control" unique_id=545027165]
 layout_mode = 1
@@ -56,7 +59,6 @@ element_images = Array[Texture2D]([ExtResource("5_savvf"), ExtResource("6_p0c1n"
 [node name="OptionsUi" parent="Control" unique_id=1405658407 instance=ExtResource("12_savvf")]
 visible = false
 layout_mode = 1
-main_menu_scene = ExtResource("13_p0c1n")
 
 [connection signal="on_failed_cast" from="CastTyper" to="Control" method="_on_cast_typer_on_failed_cast"]
 [connection signal="on_successful_cast" from="CastTyper" to="Control" method="_on_cast_typer_on_successful_cast"]

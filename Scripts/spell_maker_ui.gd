@@ -34,7 +34,7 @@ const COLOR_DONE := Color(0.128, 0.429, 0.16, 1.0)     # green: already typed co
 
 var _default_component_color: Color
 
-var _elements: Array[Enums.Spell]
+var _elements: Array[Enums.Element]
 var _component_template: PanelContainer
 var _spells_cast := 0
 var _scroll_tween: Tween
@@ -77,6 +77,9 @@ func _on_typing_active_true() -> void:
 	
 func _on_typing_active_false() -> void:
 	print("changing to false")
+	var label = current_component_panel.get_node("VBoxContainer/PressKeyLabel")
+	label.set("theme_override_colors/font_color", Color(0.831, 0.29, 0.253, 1.0))
+	label.text = "Failure"
 	_active = false
 
 # MUST SENT PROMPT TO AI CONNECTION
@@ -128,7 +131,7 @@ func _update_counter() -> void:
 
 # FOR ADDING SPELL TO UPPER BAR
 # Fills ComponentsBar with one component (image + name) per element of the new spell
-func show_current_spell(elements: Array[Enums.Spell]) -> void:
+func show_current_spell(elements: Array[Enums.Element]) -> void:
 	_on_typing_active_true()
 	_elements = elements
 	
@@ -191,7 +194,7 @@ func _update_component_colors(correct_amount: int) -> void:
 		else:
 			set_panel_color(_default_component_color, component)
 
-func set_panel_image(spell: Enums.Spell, slot: Panel) -> void:
+func set_panel_image(spell: Enums.Element, slot: Panel) -> void:
 	if spell >= element_images.size() or element_images[spell] == null :
 		slot.remove_theme_stylebox_override("panel")
 		return
