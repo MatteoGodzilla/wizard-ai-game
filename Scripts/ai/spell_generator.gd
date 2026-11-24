@@ -16,9 +16,7 @@ signal request_rejected(message: String)
 
 const Recipe = preload("res://Scripts/ai/spell_recipe.gd")
 const Prompt = preload("res://Scripts/ai/spell_prompt.gd")
-const DEFAULT_ENDPOINT := "https://openrouter.ai/api/v1/chat/completions"
-const DEFAULT_SAVE_PATH := "user://spells/latest_spell.json"
-const LOCAL_CONFIG_PATH := "res://openrouter.local.cfg"
+const Providers = preload("res://Scripts/ai/provider_config.gd")
 ## These templates supply the description and elements when generation fails.
 ## Their names are replaced with the original player input before use.
 const FALLBACKS: Array[Dictionary] = [
@@ -50,11 +48,11 @@ const FALLBACKS: Array[Dictionary] = [
 ]
 
 ## URL of the chat completions endpoint.
-var endpoint := DEFAULT_ENDPOINT
+var endpoint := ""
 ## Maximum time to wait for one API request, in seconds.
 var timeout_seconds := 30.0
 ## JSON file overwritten after each completed request when auto_save is enabled.
-var save_path := DEFAULT_SAVE_PATH
+var save_path := Providers.game_root().path_join("spellcheck/local/latest_recipe.json")
 var auto_save := true
 ## Most recent recipe. Its name is the exact text passed to generate().
 var last_recipe: Dictionary = {}
@@ -67,6 +65,7 @@ var _busy := false
 var _pending_input := ""
 var _started_ms := 0
 var _response_model := ""
+var _config: Dictionary = {}
 
 
 ## Sets the key for later requests. An empty value uses the environment or local config.
@@ -84,31 +83,36 @@ func is_busy() -> bool:
 	return _busy
 
 
+func cancel() -> void:
+	_busy = false
+	_pending_input = ""
+	if is_instance_valid(_http):
+		_http.cancel_request()
+		_http.request_completed.disconnect(_on_request_completed)
+		_http.queue_free()
+		_http = null
+
+
 # Both the game and the demo read the same local key without saving it in scenes.
 func _get_api_key() -> String:
 	if not _api_key.is_empty():
 		return _api_key
-	var environment_key := OS.get_environment("OPENROUTER_API_KEY").strip_edges()
-	if not environment_key.is_empty():
-		return environment_key
-	var config := ConfigFile.new()
-	if FileAccess.file_exists(LOCAL_CONFIG_PATH) and config.load(LOCAL_CONFIG_PATH) == OK:
-		var value: Variant = config.get_value("openrouter", "api_key", "")
-		if value is String:
-			return value.strip_edges()
-	return ""
+	return Providers.resolve("WORKSHOP")["key"]
 
 
 ## Accepts a spell name of 1-120 characters, preserving its case and spaces.
 ## OK means the request was accepted. The result and its source arrive through recipe_ready.
 ## Empty or oversized names return ERR_INVALID_PARAMETER. A concurrent call returns
 ## ERR_BUSY. Both errors emit request_rejected without starting another request.
-func generate(spell_text: String) -> Error:
+func generate(spell_text: String, description: String = "") -> Error:
 	if _busy:
 		request_rejected.emit("A recipe request is already in progress.")
 		return ERR_BUSY
 	if spell_text.strip_edges().is_empty() or spell_text.length() > Recipe.MAX_INPUT_LENGTH:
 		request_rejected.emit("Enter a spell name with 1-%d characters." % Recipe.MAX_INPUT_LENGTH)
+		return ERR_INVALID_PARAMETER
+	if description.length() > 400:
+		request_rejected.emit("The optional description can contain up to 400 characters.")
 		return ERR_INVALID_PARAMETER
 	_busy = true
 	_pending_input = spell_text
@@ -116,13 +120,15 @@ func generate(spell_text: String) -> Error:
 	_started_ms = Time.get_ticks_msec()
 	generation_started.emit(spell_text)
 
-	var key := _get_api_key()
-	if key.is_empty():
-		_finish_fallback("No API key supplied. Using a built-in recipe.")
+	_config = Providers.resolve("WORKSHOP")
+	var key: String = _config["key"] if _api_key.is_empty() else _api_key
+	if not _config["error"].is_empty() and (key.is_empty() or _config["endpoint"].is_empty() or _config["model"].is_empty()):
+		_finish_fallback(_config["error"])
 		return OK
 	if _http == null:
 		_http = HTTPRequest.new()
 		_http.name = "OpenRouterRequest"
+		_http.max_redirects = 0
 		_http.body_size_limit = 256 * 1024
 		_http.request_completed.connect(_on_request_completed)
 		add_child(_http)
@@ -132,8 +138,8 @@ func generate(spell_text: String) -> Error:
 		"Content-Type: application/json",
 	])
 	var error := _http.request(
-		endpoint, headers, HTTPClient.METHOD_POST,
-		JSON.stringify(Prompt.build_request(spell_text))
+		_config["endpoint"] if endpoint.is_empty() else endpoint, headers, HTTPClient.METHOD_POST,
+		JSON.stringify(Prompt.build_request(spell_text, description, _config))
 	)
 	if error != OK:
 		_finish_fallback("Could not start the API request (%s)." % error_string(error))
@@ -154,41 +160,27 @@ func _on_request_completed(
 		return
 	if response_code < 200 or response_code >= 300:
 		# Provider error bodies can contain request data, so report only the status.
-		_finish_fallback("OpenRouter returned HTTP %d." % response_code)
+		_finish_fallback("The workshop provider returned HTTP %d." % response_code)
 		return
 	var parser := JSON.new()
 	if parser.parse(body.get_string_from_utf8()) != OK or not parser.data is Dictionary:
-		_finish_fallback("OpenRouter returned an invalid response envelope.")
+		_finish_fallback("The workshop provider returned an invalid response envelope.")
 		return
 	var envelope: Dictionary = parser.data
 	var response_model: Variant = envelope.get("model", "")
 	if response_model is String:
 		_response_model = response_model
-	if envelope.has("error"):
-		_finish_fallback("OpenRouter reported a generation error.")
+	var recipe_text: Variant = Providers.completion_text(envelope)
+	if not recipe_text is String:
+		_finish_fallback("The model did not return a complete recipe.")
 		return
-	var choices: Variant = envelope.get("choices")
-	if not choices is Array or choices.is_empty() or not choices[0] is Dictionary:
-		_finish_fallback("The API response has no completion.")
-		return
-	var choice: Dictionary = choices[0]
-	if choice.get("finish_reason", "") != "stop":
-		_finish_fallback("The model did not complete the recipe (%s)." % str(choice.get("finish_reason", "missing")))
-		return
-	var message: Variant = choice.get("message")
-	if not message is Dictionary or not message.get("content") is String:
-		_finish_fallback("The model returned no recipe text.")
-		return
-	if message.get("refusal") != null and message.get("refusal") != "":
-		_finish_fallback("The model declined the request.")
-		return
-	var checked := Recipe.parse_json(message["content"])
+	var checked := Recipe.parse_json(recipe_text)
 	if not checked["valid"]:
 		_finish_fallback("Invalid model recipe: " + checked["error"])
 		return
-	var model_used: Variant = envelope.get("model", Prompt.MODEL)
+	var model_used: Variant = envelope.get("model", _config["model"])
 	if not model_used is String:
-		model_used = Prompt.MODEL
+		model_used = _config["model"]
 	_finish(checked["recipe"], "generated", "", model_used)
 
 

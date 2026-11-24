@@ -13,47 +13,67 @@ enum Phase { ENTERING, GENERATING, COUNTDOWN, CASTING, FINISHED }
 @onready var ui: Control = $Interface/SpellMakerUi
 @onready var effects: Node3D = $SpellEffects
 
-var spell_book := SpellBook.new()
-var save_path := SpellBook.SAVE_PATH
 var phase := Phase.ENTERING
 var current_recipe: Dictionary = {}
 var current_metadata: Dictionary = {}
 var _elements: Array[Enums.Element] = []
 var _countdown := 0.0
 var _last_countdown := -1
+var _attempt_id := ""
 
 
 func _ready() -> void:
-	ui.spell_submitted.connect(_on_spell_submitted)
+	ui.craft_submitted.connect(_on_spell_submitted)
+	ui.cancel_requested.connect(_cancel_crafting)
 	ui.finish_requested.connect(_finish_crafting)
 	ui.continue_requested.connect(_continue_crafting)
+	ui.sandbox_requested.connect(_enter_sandbox)
+	ui.retry_requested.connect(_retry_spell)
 	ui.menu_requested.connect(_return_to_menu)
+	Crafting.changed.connect(_refresh_book)
+	generator.auto_save = false
 	generator.recipe_ready.connect(_on_recipe_ready)
 	generator.request_rejected.connect(_on_request_rejected)
 	caster.update_graphics.connect(ui._on_typing_progress)
 	caster.on_successful_cast.connect(_on_cast_completed)
 	caster.on_failed_cast.connect(_on_cast_failed)
 	ui.reset_crafting()
+	_resume_entry()
 	element_input.enabled = false
 	if not Audio.bgm.playing:
 		Audio.next_bgm()
 
 
-func _on_spell_submitted(spell_name: String) -> void:
-	if phase != Phase.ENTERING or spell_book.is_full():
+func _exit_tree() -> void:
+	if Crafting.changed.is_connected(_refresh_book):
+		Crafting.changed.disconnect(_refresh_book)
+	if not _attempt_id.is_empty():
+		Crafting.abandon(_attempt_id)
+
+
+func _on_spell_submitted(spell_name: String, description: String) -> void:
+	if phase != Phase.ENTERING or Crafting.is_full():
 		return
 	phase = Phase.GENERATING
 	ui.set_entry_enabled(false)
+	var attempt: Dictionary = Crafting.begin(spell_name, description)
+	if attempt.has("error"):
+		_resume_entry()
+		ui.show_status(attempt["error"])
+		return
+	_attempt_id = attempt["id"]
+	ui.set_cancel_enabled(true)
+	_refresh_book()
 	ui.show_status("Interpreting your spell...")
 	# A missing key can emit recipe_ready before generate() returns.
-	generator.generate(spell_name)
+	generator.generate(spell_name.strip_edges(), description.strip_edges())
 
 
 func _on_request_rejected(message: String) -> void:
 	if phase == Phase.GENERATING:
-		phase = Phase.ENTERING
+		_abandon_attempt()
+		_resume_entry()
 		ui.show_status(message)
-		ui.set_entry_enabled(true)
 
 
 func _on_recipe_ready(recipe: Dictionary, metadata: Dictionary) -> void:
@@ -100,49 +120,91 @@ func _on_cast_completed() -> void:
 	if phase != Phase.CASTING:
 		return
 	element_input.enabled = false
-	var error := spell_book.add_spell(current_recipe, caster.elapsed_time, caster.mistakes, current_metadata)
-	phase = Phase.ENTERING
-	if error != OK:
-		ui._on_typing_active_false()
-		ui.set_entry_enabled(not spell_book.is_full())
-		ui.show_status("Could not add this spell to the spellbook. Try again.")
+	ui._on_typing_active_false()
+	var id := _attempt_id
+	_attempt_id = ""
+	var error: String = Crafting.earn(id, current_recipe, caster.elapsed_time, caster.mistakes, current_metadata)
+	if not error.is_empty():
+		_resume_entry()
+		ui.show_status(error)
 		return
-	ui.add_spell_entry(spell_book.spells.back())
 	effects.play_craft(_elements)
 	_resume_entry(true)
 
 
 func _on_cast_failed() -> void:
+	if phase != Phase.CASTING:
+		return
 	element_input.enabled = false
-	phase = Phase.ENTERING
+	_abandon_attempt()
 	ui._on_typing_active_false()
+	_resume_entry()
 	ui.show_status("Casting stopped. Complete the recipe to add this spell.")
-	ui.set_entry_enabled(true)
+
+
+func _cancel_crafting() -> void:
+	if phase not in [Phase.GENERATING, Phase.COUNTDOWN, Phase.CASTING]:
+		return
+	phase = Phase.ENTERING
+	generator.cancel()
+	caster.cancel_cast()
+	element_input.enabled = false
+	_abandon_attempt()
+	ui.hide_current_recipe()
+	_resume_entry()
+	ui.show_status("Crafting canceled.")
+
+
+func _abandon_attempt() -> void:
+	var id := _attempt_id
+	_attempt_id = ""
+	if not id.is_empty():
+		Crafting.abandon(id)
 
 
 func _resume_entry(clear_input: bool = false) -> void:
 	phase = Phase.ENTERING
-	ui.set_entry_enabled(not spell_book.is_full(), clear_input)
-	ui.set_finish_enabled(not spell_book.spells.is_empty())
-	if spell_book.is_full():
-		ui.show_status("Your spellbook is full. Move to battlefield when you are ready.")
+	ui.set_cancel_enabled(false)
+	ui.set_entry_enabled(not Crafting.is_full(), clear_input)
+	_refresh_book()
+	if not Crafting.book.warning.is_empty():
+		ui.show_status(Crafting.book.warning)
+	elif Crafting.is_full():
+		ui.show_status("Your spellbook is full. Review your spells to enter the sandbox.")
 	else:
-		ui.show_status("Craft another spell or finish with your current spellbook.")
+		ui.show_status("Enter a spell name and press Enter or Create recipe.")
 
 
-## Only completed recipes are exported. A save failure leaves the collection editable.
-## The next phase can connect crafting_finished and load SpellBook.SAVE_PATH.
 func _finish_crafting() -> void:
-	if phase != Phase.ENTERING or spell_book.spells.is_empty():
-		return
-	var error := spell_book.save_to_file(save_path)
-	if error != OK:
-		ui.show_status("Could not save your spellbook (%s). Try again." % error_string(error))
+	if phase != Phase.ENTERING:
 		return
 	phase = Phase.FINISHED
 	ui.set_entry_enabled(false)
-	ui.show_crafting_result(spell_book)
-	crafting_finished.emit(spell_book.spells.duplicate(true))
+	_refresh_book()
+	ui.show_crafting_result()
+	crafting_finished.emit(Crafting.workshop_records())
+
+
+func _refresh_book() -> void:
+	var records: Array[Dictionary] = Crafting.workshop_records()
+	ui.show_workshop_records(records, phase == Phase.ENTERING)
+	ui.set_finish_enabled(phase == Phase.ENTERING)
+
+
+func _retry_spell(id: String, description: String) -> void:
+	if phase != Phase.ENTERING:
+		return
+	var error: String = Crafting.retry(id, description)
+	if not error.is_empty():
+		ui.show_status(error)
+
+
+func _enter_sandbox() -> void:
+	if phase != Phase.FINISHED:
+		return
+	var error := get_tree().change_scene_to_file("res://spellcheck/sandbox.tscn")
+	if error != OK:
+		ui.show_status("Could not open the sandbox (%s)." % error_string(error))
 
 
 func _continue_crafting() -> void:

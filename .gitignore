@@ -3,3 +3,10 @@
 /android/
 /addons/
 /openrouter.local.cfg
+/override.cfg
+
+# Local files
+.local
+/spellcheck/local/
+/.env
+/dist/

@@ -2,10 +2,15 @@ extends Control
 ## Shows the recipe being crafted and the collection of successfully completed spells.
 
 signal spell_submitted(spell_name: String)
+signal craft_submitted(spell_name: String, description: String)
+signal cancel_requested
+signal retry_requested(id: String, description: String)
 signal finish_requested
 signal continue_requested
+signal sandbox_requested
 signal menu_requested
 
+const Spellbook = preload("res://spellcheck/spellbook.gd")
 const SCROLL_DURATION := 0.2
 const COLOR_CURRENT := Color(0.516, 0.396, 0.131)
 const COLOR_DONE := Color(0.128, 0.429, 0.16)
@@ -15,6 +20,7 @@ const COLOR_DONE := Color(0.128, 0.429, 0.16)
 
 @onready var spell_promt: Label = $VBoxContainer/SpellPromt
 @onready var spell_text_input: LineEdit = $VBoxContainer/SpellTextInput
+@onready var spell_description_input: LineEdit = $VBoxContainer/SpellDescriptionInput
 @onready var counter_label: Label = $SpellBookPanel/VBoxContainer/Counter
 @onready var scroll_container: ScrollContainer = $SpellBookPanel/VBoxContainer/ScrollContainer
 @onready var spell_list: VBoxContainer = $SpellBookPanel/VBoxContainer/ScrollContainer/SpellList
@@ -32,17 +38,25 @@ var _elements: Array[Enums.Element] = []
 var _crafted_count := 0
 var _scroll_tween: Tween
 var _active := false
+var _can_cancel := false
 var _practice_typer: CastTyper
 
 
 func _ready() -> void:
 	spell_text_input.max_length = 120
 	spell_text_input.text_submitted.connect(_on_LineEdit_text_entered)
-	$VBoxContainer/GenerateButton.pressed.connect(func() -> void:
+	spell_description_input.text_submitted.connect(func(_description: String) -> void:
 		_on_LineEdit_text_entered(spell_text_input.text)
+	)
+	$VBoxContainer/GenerateButton.pressed.connect(func() -> void:
+		if _can_cancel:
+			cancel_requested.emit()
+		else:
+			_on_LineEdit_text_entered(spell_text_input.text)
 	)
 	finish_button.pressed.connect(func() -> void: finish_requested.emit())
 	$ResultPanel/VBoxContainer/ContinueButton.pressed.connect(func() -> void: continue_requested.emit())
+	$ResultPanel/VBoxContainer/SandboxButton.pressed.connect(func() -> void: sandbox_requested.emit())
 	$ResultPanel/VBoxContainer/MenuButton.pressed.connect(func() -> void: menu_requested.emit())
 	var components := entry_template.get_node("VBoxContainer/Components")
 	_component_template = components.get_child(0)
@@ -64,6 +78,7 @@ func _ready() -> void:
 			_practice_typer.on_successful_cast.connect(_on_practice_completed)
 			_practice_typer.update_graphics.connect(_on_typing_progress)
 		finish_button.hide()
+		spell_description_input.hide()
 	$Panel.visible = spell_source != null
 	_update_counter()
 	current_component_panel.hide()
@@ -78,24 +93,37 @@ func _exit_tree() -> void:
 
 func _on_LineEdit_text_entered(new_text: String) -> void:
 	if spell_text_input.editable:
-		spell_submitted.emit(new_text)
+		if spell_source == null:
+			craft_submitted.emit(new_text, spell_description_input.text)
+		else:
+			spell_submitted.emit(new_text)
 
 
 func set_entry_enabled(enabled: bool, clear_input: bool = false) -> void:
 	spell_text_input.editable = enabled
+	spell_description_input.editable = enabled
 	$VBoxContainer/GenerateButton.disabled = not enabled
 	set_finish_enabled(enabled and _crafted_count > 0)
 	if enabled:
 		if clear_input:
 			spell_text_input.clear()
+			spell_description_input.clear()
 		spell_text_input.grab_focus()
 	else:
 		spell_text_input.release_focus()
+		spell_description_input.release_focus()
 		$VBoxContainer/GenerateButton.release_focus()
 
 
 func set_finish_enabled(enabled: bool) -> void:
 	finish_button.disabled = not enabled
+
+
+func set_cancel_enabled(enabled: bool) -> void:
+	_can_cancel = enabled
+	var button: Button = $VBoxContainer/GenerateButton
+	button.text = "Cancel crafting" if enabled else "Create recipe"
+	button.disabled = not enabled and not spell_text_input.editable
 
 
 func show_status(message: String) -> void:
@@ -156,8 +184,14 @@ func _on_typing_active_false() -> void:
 	current_component_panel.hide()
 
 
-func add_spell_entry(record: Dictionary) -> void:
+func hide_current_recipe() -> void:
 	_on_typing_active_false()
+	$SpellComponentsPanel.hide()
+	$SpellNameLabel.text = "Craft a spell"
+	$DescriptionLabel.text = "Invent a name, complete its recipe and add it to your spellbook."
+
+
+func add_spell_entry(record: Dictionary) -> PanelContainer:
 	_crafted_count += 1
 	var entry := entry_template.duplicate() as PanelContainer
 	entry.name = "SpellEntry%d" % _crafted_count
@@ -177,9 +211,11 @@ func add_spell_entry(record: Dictionary) -> void:
 	spell_list.move_child(entry, 1)
 	scroll_container.scroll_vertical = 0
 	_update_counter()
+	return entry
 
 
 func _on_practice_completed() -> void:
+	_on_typing_active_false()
 	var names: Array[String] = []
 	for element in _elements:
 		names.append(Enums.spell_to_string(element))
@@ -209,14 +245,52 @@ func reset_crafting() -> void:
 	set_entry_enabled(true, true)
 
 
-func show_crafting_result(book: SpellBook) -> void:
-	_on_typing_active_false()
-	$ResultPanel/VBoxContainer/Summary.text = "%d / %d spells saved\nTotal crafting time: %.2f s\nMistakes: %d\n\nYour spellbook is ready." % [
-		book.spells.size(), SpellBook.MAX_SPELLS, book.total_cast_time(), book.total_mistakes(),
+func show_workshop_records(records: Array[Dictionary], can_retry: bool) -> void:
+	for child in spell_list.get_children():
+		if child != empty_label:
+			spell_list.remove_child(child)
+			child.queue_free()
+	_crafted_count = 0
+	var unlocked := 0
+	for record: Dictionary in records:
+		var recipe: Dictionary = record["recipe"]
+		var entry := add_spell_entry({
+			"name": record["name"], "description": recipe.get("description", record.get("description", "")),
+			"elements": recipe.get("elements", []), "craft_time": record["craft_time"],
+			"mistakes": record["mistakes"],
+		})
+		if record["state"] == "unlocked":
+			unlocked += 1
+			continue
+		var content := entry.get_node("VBoxContainer")
+		var error := String(record.get("error", ""))
+		var detail := Label.new()
+		detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		detail.text = "Preparing sandbox effect…" if error.is_empty() else error
+		content.add_child(detail)
+		if can_retry and not error.is_empty():
+			var clarification := LineEdit.new()
+			clarification.placeholder_text = "Clarify the sandbox effect (optional)"
+			clarification.max_length = 400
+			content.add_child(clarification)
+			var retry_button := Button.new()
+			retry_button.text = "Retry sandbox effect"
+			retry_button.pressed.connect(_request_retry.bind(record["id"], clarification))
+			content.add_child(retry_button)
+	_update_counter()
+	$ResultPanel/VBoxContainer/Summary.text = "%d crafted spells ready for the sandbox.\n%d still preparing or need a retry.\nFireball is available from the start." % [
+		unlocked, records.size() - unlocked,
 	]
+
+
+func _request_retry(id: String, clarification: LineEdit) -> void:
+	retry_requested.emit(id, clarification.text)
+
+
+func show_crafting_result() -> void:
+	_on_typing_active_false()
 	$ResultPanel.show()
-	$ResultPanel/VBoxContainer/ContinueButton.grab_focus()
-	show_status("Your spellbook has been saved.")
+	$ResultPanel/VBoxContainer/SandboxButton.grab_focus()
 
 
 func hide_crafting_result() -> void:
@@ -224,7 +298,7 @@ func hide_crafting_result() -> void:
 
 
 func _update_counter() -> void:
-	counter_label.text = "%d / %d spells crafted" % [_crafted_count, SpellBook.MAX_SPELLS]
+	counter_label.text = "%d / %d spells crafted" % [_crafted_count, Spellbook.MAX_CRAFTS]
 	empty_label.visible = _crafted_count == 0
 
 
