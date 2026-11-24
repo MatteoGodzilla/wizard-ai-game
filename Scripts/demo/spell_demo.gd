@@ -5,7 +5,7 @@ extends Control
 
 @onready var _generator: SpellGenerator = $SpellGenerator
 @onready var _spell_input: LineEdit = %SpellInput
-@onready var _key_input: LineEdit = %ApiKey
+
 @onready var _generate_button: Button = %GenerateButton
 @onready var _read_button: Button = %ReadButton
 @onready var _status: Label = %Status
@@ -26,9 +26,8 @@ func _ready() -> void:
 	_spell_input.grab_focus()
 
 
-## Submits the current spell name with the key configured here.
+## Submits the current name with the shared local OpenRouter configuration.
 func _generate() -> void:
-	_generator.set_api_key("ENTER_OPENROUTER_API_KEY_HERE")
 	_generator.generate(_spell_input.text)
 
 
@@ -87,4 +86,3 @@ func _set_busy(busy: bool) -> void:
 	_generate_button.disabled = busy
 	_read_button.disabled = busy
 	_spell_input.editable = not busy
-	_key_input.editable = not busy

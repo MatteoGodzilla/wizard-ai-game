@@ -5,6 +5,7 @@ signal element_typed(element: Enums.Element)
 
 const INPUT_ACTION_PREFIX := "element_"
 
+var enabled := true
 var element_by_input_action : Dictionary[StringName, Enums.Element] = {}
 
 func _ready() -> void:
@@ -15,6 +16,8 @@ func _ready() -> void:
 		element_by_input_action[input_action_name] = Enums.Element[element_name]
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not enabled or event.is_echo():
+		return
 	for input_action_name in element_by_input_action:
 		if event.is_action_pressed(input_action_name):
 			element_typed.emit(element_by_input_action[input_action_name])

@@ -58,7 +58,8 @@ static func build_request(spell_text: String) -> Dictionary:
 	return {
 		"model": MODEL,
 		"stream": false,
-		"max_tokens": 2048,
+		"max_tokens": 8192,
+		"reasoning": {"effort": "low", "exclude": true},
 		"messages": [
 			{"role": "system", "content": SYSTEM_PROMPT},
 			{"role": "user", "content": JSON.stringify({"spell_text": spell_text})},

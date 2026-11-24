@@ -103,17 +103,11 @@ text = "SPELLCHECK  /  Recipe test"
 layout_mode = 2
 text = "Spell name > openrouter/free > validated recipe > JSON"
 
-[node name="ApiKey" type="LineEdit" parent="Margin/Panel/Content" unique_id=2064745745]
-unique_name_in_owner = true
-layout_mode = 2
-placeholder_text = "OpenRouter API key (optional; kept only in memory)"
-secret = true
-
 [node name="KeyHint" type="Label" parent="Margin/Panel/Content" unique_id=718103916]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.6, 0.7, 1)
 theme_override_font_sizes/font_size = 13
-text = "An empty key uses OPENROUTER_API_KEY. Without a key, the module returns a built-in fallback."
+text = "The key is read from openrouter.local.cfg or OPENROUTER_API_KEY. No key uses a built-in recipe."
 autowrap_mode = 2
 
 [node name="InputRow" type="HBoxContainer" parent="Margin/Panel/Content" unique_id=1850748391]

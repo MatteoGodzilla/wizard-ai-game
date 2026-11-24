@@ -18,6 +18,7 @@ const Recipe = preload("res://Scripts/ai/spell_recipe.gd")
 const Prompt = preload("res://Scripts/ai/spell_prompt.gd")
 const DEFAULT_ENDPOINT := "https://openrouter.ai/api/v1/chat/completions"
 const DEFAULT_SAVE_PATH := "user://spells/latest_spell.json"
+const LOCAL_CONFIG_PATH := "res://openrouter.local.cfg"
 ## These templates supply the description and elements when generation fails.
 ## Their names are replaced with the original player input before use.
 const FALLBACKS: Array[Dictionary] = [
@@ -65,21 +66,37 @@ var _http: HTTPRequest
 var _busy := false
 var _pending_input := ""
 var _started_ms := 0
+var _response_model := ""
 
 
-## Sets the key for later requests. An empty value uses OPENROUTER_API_KEY instead.
+## Sets the key for later requests. An empty value uses the environment or local config.
 func set_api_key(value: String) -> void:
 	_api_key = value.strip_edges()
 
 
 ## Checks whether a key is available. It does not send a request to verify the key.
 func has_api_key() -> bool:
-	return not _api_key.is_empty() or not OS.get_environment("OPENROUTER_API_KEY").strip_edges().is_empty()
+	return not _get_api_key().is_empty()
 
 
 ## Returns true while a request is running. The flag is cleared before recipe_ready is emitted.
 func is_busy() -> bool:
 	return _busy
+
+
+# Both the game and the demo read the same local key without saving it in scenes.
+func _get_api_key() -> String:
+	if not _api_key.is_empty():
+		return _api_key
+	var environment_key := OS.get_environment("OPENROUTER_API_KEY").strip_edges()
+	if not environment_key.is_empty():
+		return environment_key
+	var config := ConfigFile.new()
+	if FileAccess.file_exists(LOCAL_CONFIG_PATH) and config.load(LOCAL_CONFIG_PATH) == OK:
+		var value: Variant = config.get_value("openrouter", "api_key", "")
+		if value is String:
+			return value.strip_edges()
+	return ""
 
 
 ## Accepts a spell name of 1-120 characters, preserving its case and spaces.
@@ -95,12 +112,11 @@ func generate(spell_text: String) -> Error:
 		return ERR_INVALID_PARAMETER
 	_busy = true
 	_pending_input = spell_text
+	_response_model = ""
 	_started_ms = Time.get_ticks_msec()
 	generation_started.emit(spell_text)
 
-	var key := _api_key
-	if key.is_empty():
-		key = OS.get_environment("OPENROUTER_API_KEY").strip_edges()
+	var key := _get_api_key()
 	if key.is_empty():
 		_finish_fallback("No API key supplied. Using a built-in recipe.")
 		return OK
@@ -145,6 +161,9 @@ func _on_request_completed(
 		_finish_fallback("OpenRouter returned an invalid response envelope.")
 		return
 	var envelope: Dictionary = parser.data
+	var response_model: Variant = envelope.get("model", "")
+	if response_model is String:
+		_response_model = response_model
 	if envelope.has("error"):
 		_finish_fallback("OpenRouter reported a generation error.")
 		return
@@ -154,7 +173,7 @@ func _on_request_completed(
 		return
 	var choice: Dictionary = choices[0]
 	if choice.get("finish_reason", "") != "stop":
-		_finish_fallback("The model did not complete the recipe.")
+		_finish_fallback("The model did not complete the recipe (%s)." % str(choice.get("finish_reason", "missing")))
 		return
 	var message: Variant = choice.get("message")
 	if not message is Dictionary or not message.get("content") is String:
@@ -176,7 +195,7 @@ func _on_request_completed(
 # Built-in recipes go through the same validator and save path as API results.
 func _finish_fallback(reason: String) -> void:
 	var checked := Recipe.validate(FALLBACKS.pick_random())
-	_finish(checked["recipe"], "fallback", reason, "")
+	_finish(checked["recipe"], "fallback", reason, _response_model)
 
 
 # Save errors are included in metadata. The caller still receives the valid recipe.

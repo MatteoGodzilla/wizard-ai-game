@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b60ydgh6wb7fc"]
 
 [ext_resource type="Script" uid="uid://cvf7qor7xxpbg" path="res://Scripts/main_menu_ui.gd" id="1_1ehe0"]
-[ext_resource type="PackedScene" uid="uid://bf3ob6aaqc5u0" path="res://Scenes/test/casting-controls-test.tscn" id="2_wyh8j"]
+[ext_resource type="PackedScene" uid="uid://dhwx8j821h2eb" path="res://Scenes/spell_maker.tscn" id="2_ce3w2"]
 [ext_resource type="Texture2D" uid="uid://c4cnoddofen5m" path="res://Fantasy_Assets/images/menu_bg2.jpg" id="3_ce3w2"]
 [ext_resource type="FontFile" uid="uid://b4osf2cpdx0fi" path="res://Fantasy_Assets/font/Catholicon.ttf" id="3_n45e2"]
 
@@ -44,7 +44,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1ehe0")
-next_scene = ExtResource("2_wyh8j")
+next_scene = ExtResource("2_ce3w2")
 
 [node name="Panel" type="Panel" parent="." unique_id=365559070]
 layout_mode = 1

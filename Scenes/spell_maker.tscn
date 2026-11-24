@@ -1,9 +1,119 @@
 [gd_scene format=3 uid="uid://dhwx8j821h2eb"]
 
-[ext_resource type="PackedScene" uid="uid://co822d8wd80xe" path="res://Fantasy_Assets/glTF/Anvil.gltf" id="1_iiqng"]
+[ext_resource type="Script" uid="uid://dx3813umtsvhd" path="res://Scripts/spell_game.gd" id="1_game"]
+[ext_resource type="PackedScene" uid="uid://if3bmcmc7qcq" path="res://Scenes/spell_maker_background.tscn" id="2_background"]
+[ext_resource type="PackedScene" uid="uid://cvro2y7vkh568" path="res://Scenes/spell_maker_ui.tscn" id="3_ui"]
+[ext_resource type="PackedScene" uid="uid://dtnecwyhn06g1" path="res://Fantasy_Assets/Medieval_Village_Assets/glTF/Prop_Crate.gltf" id="3_yui8b"]
+[ext_resource type="PackedScene" uid="uid://62h0ede5pj17" path="res://Fantasy_Assets/Medieval_Village_Assets/glTF/Prop_Vine1.gltf" id="4_1j61g"]
+[ext_resource type="Script" uid="uid://imdx5mmo8rb4" path="res://Scripts/ai/spell_generator.gd" id="4_generator"]
+[ext_resource type="PackedScene" uid="uid://jortk3qeybcw" path="res://Fantasy_Assets/Medieval_Village_Assets/glTF/Prop_WoodenFence_Single.gltf" id="5_7x63o"]
+[ext_resource type="Script" uid="uid://npyum54l57pr" path="res://Scripts/cast_typer.gd" id="5_caster"]
+[ext_resource type="PackedScene" uid="uid://dmkdpt67uecs4" path="res://Fantasy_Assets/used_assets/banner_1_cloth_2.tscn" id="6_81qtn"]
+[ext_resource type="Script" uid="uid://doqrjsfdqb2dj" path="res://Scripts/element_input.gd" id="6_input"]
+[ext_resource type="PackedScene" uid="uid://ca1xy5l67xvay" path="res://Scenes/options_ui.tscn" id="7_options"]
+[ext_resource type="Script" uid="uid://n8w6wkd108va" path="res://Scripts/spell_effects.gd" id="8_effects"]
+[ext_resource type="PackedScene" uid="uid://ho77nanfj33r" path="res://Fantasy_Assets/used_assets/book_group_medium_12.tscn" id="13_4kt01"]
+[ext_resource type="PackedScene" uid="uid://bw0esuvu2itr2" path="res://Fantasy_Assets/used_assets/potion_42.tscn" id="14_k7d6q"]
+[ext_resource type="PackedScene" uid="uid://d0fkkcvlb667k" path="res://Fantasy_Assets/used_assets/scroll_22.tscn" id="15_ulg44"]
+[ext_resource type="PackedScene" uid="uid://dwmmeldrfam5" path="res://Fantasy_Assets/used_assets/workbench_2.tscn" id="16_p78wc"]
 
-[node name="SpellMaker" type="Node3D" unique_id=1164320167]
+[sub_resource type="Environment" id="Environment_training"]
+background_mode = 1
+background_color = Color(0.04, 0.025, 0.06, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.68, 0.58, 0.48, 1)
+ambient_light_energy = 0.7
 
-[node name="Node3D" type="Node3D" parent="." unique_id=218836442]
+[node name="SpellMaker" type="Node3D" unique_id=1500843098]
+script = ExtResource("1_game")
 
-[node name="Anvil2" parent="Node3D" unique_id=1107227097 instance=ExtResource("1_iiqng")]
+[node name="Background" parent="." unique_id=1173605099 instance=ExtResource("2_background")]
+
+[node name="BookGroup_Medium_12" parent="Background" unique_id=1499047919 instance=ExtResource("13_4kt01")]
+transform = Transform3D(-0.99999994, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -0.99999994, 0.10048497, 0.88342524, 3.4348717)
+
+[node name="BookGroup_Medium_13" parent="Background" unique_id=2025655291 instance=ExtResource("13_4kt01")]
+transform = Transform3D(-0.99999994, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -0.99999994, 0.88743305, 0.88342524, 3.4348717)
+
+[node name="Potion_42" parent="Background" unique_id=344980482 instance=ExtResource("14_k7d6q")]
+transform = Transform3D(1.9745774, -0.31666395, -0.027711293, 0.30535948, 1.8411765, 0.7189058, -0.088315085, -0.7139986, 1.8661208, 0.84177035, -0.029736707, 0.08664444)
+
+[node name="Scroll_22" parent="Background" unique_id=1958978352 instance=ExtResource("15_ulg44")]
+transform = Transform3D(1.0371647, 0, 1.7100554, 0, 2, 0, -1.7100554, 0, 1.0371647, 0.31339848, 0.8866421, 2.9744008)
+
+[node name="Scroll_24" parent="Background" unique_id=1595107041 instance=ExtResource("15_ulg44")]
+transform = Transform3D(-1.5807328, -1.0369757, -0.6526611, -0.78446263, 0.038150974, 1.8393383, -0.94122463, 1.7097445, -0.43688768, 0.2363255, 0.97920525, 2.7914689)
+
+[node name="Scroll_23" parent="Background" unique_id=1808822409 instance=ExtResource("15_ulg44")]
+transform = Transform3D(1.9979035, -0.04267201, -0.08099752, 0, 1.7694606, -0.9322067, 0.09155052, 0.93122953, 1.7676057, -0.107399404, 0.88923603, 3.1371114)
+
+[node name="Workbench2" parent="Background" unique_id=1022298663 instance=ExtResource("16_p78wc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49283183, 0, 3.1318526)
+
+[node name="Torch_Metal2" parent="Background/Torches" parent_id_path=PackedInt32Array(1173605099, 470544179) index="0" unique_id=1139199699]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0049757, 1.6668274, -1.0691857)
+
+[node name="Wall_UnevenBrick_Straight7" parent="Background/Walls" parent_id_path=PackedInt32Array(1173605099, 1089621938) index="7" unique_id=1733206064]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.008603573, 2.3841858e-07, -2.9719)
+
+[node name="Prop_Crate4" parent="Background" unique_id=1996230078 instance=ExtResource("3_yui8b")]
+transform = Transform3D(0.45558834, 0, 0.32481787, 0, 0.6231951, 0, -0.33456653, 0, 0.44231334, 0.2793445, 0, -0.07509619)
+
+[node name="Prop_Crate2" parent="Background" unique_id=1041200998 instance=ExtResource("3_yui8b")]
+transform = Transform3D(-0.54238206, -0.04921972, 0.12832183, -0.023875223, 0.6084831, 0.13247843, -0.11934113, 0.11074334, -0.53015995, 0.6420639, 0.7407421, -0.26585644)
+
+[node name="Prop_Crate3" parent="Background" unique_id=2135074937 instance=ExtResource("3_yui8b")]
+transform = Transform3D(0.12216914, 0, 0.5460239, 0, 0.6231952, 0, -0.5444143, 0, 0.10577792, 0.99830467, 0.056517363, -0.37869108)
+
+[node name="Prop_Vine12" parent="Background" unique_id=1111575113 instance=ExtResource("4_1j61g")]
+transform = Transform3D(-4.3711385e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -4.3711385e-08, -1.0207503, 2.2994123, 0.765078)
+
+[node name="Prop_Vine13" parent="Background" unique_id=898984539 instance=ExtResource("4_1j61g")]
+transform = Transform3D(-3.3631213e-08, 1.04689075e-08, 0.99999994, 0.27268022, 0.6757733, -8.881784e-16, -0.7693925, 0.23950069, -4.3711385e-08, -1.0207502, 2.3670032, 2.678097)
+
+[node name="Prop_WoodenFence_Single2" parent="Background" unique_id=880049979 instance=ExtResource("5_7x63o")]
+transform = Transform3D(0.6427452, 0, 0, 0, 1, 0, 0, 0, 1, 2.0012877, 0, -1.1429715)
+
+[node name="Prop_WoodenFence_Single4" parent="Background" unique_id=479338168 instance=ExtResource("5_7x63o")]
+transform = Transform3D(0.6427452, 0, 0, 0, 1, 0, 0, 0, 1, 0.013151646, 0, -1.1429715)
+
+[node name="Prop_WoodenFence_Single3" parent="Background" unique_id=1872785719 instance=ExtResource("5_7x63o")]
+transform = Transform3D(0.6427452, 0, 0, 0, 1, 0, 0, 0, 1, 4.0124435, 0, -1.1429715)
+
+[node name="Banner_1_Cloth2" parent="Background" unique_id=383227861 instance=ExtResource("6_81qtn")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.9030476, 2.8270352, 1.588504)
+
+[node name="Banner_1_Cloth3" parent="Background" unique_id=155610373 instance=ExtResource("6_81qtn")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 1.9591472, 2.8270352, -2.9059222)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1437148429]
+transform = Transform3D(0.582123, -0.20633093, 0.78648615, 0, 0.96726775, 0.25375813, -0.81310076, -0.14771844, 0.5630688, 2.5189404, 2.0837815, 3.1141286)
+current = true
+fov = 51.9
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1271399183]
+environment = SubResource("Environment_training")
+
+[node name="SpellGenerator" type="Node" parent="." unique_id=1227125854]
+script = ExtResource("4_generator")
+
+[node name="ElementInput" type="Node" parent="." unique_id=1130949851]
+script = ExtResource("6_input")
+
+[node name="CastTyper" type="Node" parent="." unique_id=908969215 node_paths=PackedStringArray("element_input")]
+script = ExtResource("5_caster")
+element_input = NodePath("../ElementInput")
+
+[node name="SpellEffects" type="Node3D" parent="." unique_id=1387527039]
+script = ExtResource("8_effects")
+
+[node name="Interface" type="CanvasLayer" parent="." unique_id=446466004]
+
+[node name="SpellMakerUi" parent="Interface" unique_id=182031261 instance=ExtResource("3_ui")]
+
+[node name="Options" type="CanvasLayer" parent="." unique_id=307417673]
+layer = 5
+
+[node name="OptionsUi" parent="Options" unique_id=1974889279 instance=ExtResource("7_options")]
+
+[editable path="Background"]

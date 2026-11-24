@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bln7ho5bhxsic"]
 
 [ext_resource type="Script" uid="uid://busdluy184pa4" path="res://Scripts/audio_manager.gd" id="1_sm2tf"]
-[ext_resource type="AudioStream" uid="uid://dw8awh4xhcd6v" path="res://Audio/andriig-agriculture-farming-farm-music-551390.mp3" id="2_el2we"]
+[ext_resource type="AudioStream" path="res://Audio/Harp.mp3" id="2_el2we"]
 
 [node name="Audio Manager" type="Node" unique_id=1657933678]
 script = ExtResource("1_sm2tf")

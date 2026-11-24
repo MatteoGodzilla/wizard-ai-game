@@ -137,6 +137,7 @@ grow_vertical = 2
 script = ExtResource("1_bnskj")
 
 [node name="Panel" type="Panel" parent="." unique_id=752793853]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -152,130 +153,155 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -132.0
-offset_top = 133.0
-offset_right = 138.0
-offset_bottom = 217.0
+offset_left = -75.0
+offset_top = 205.0
+offset_right = 435.0
+offset_bottom = 325.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 10
 
 [node name="SpellPromt" type="Label" parent="VBoxContainer" unique_id=1866326816]
 layout_mode = 2
-text = "What spell are you going to cook..."
+text = "Write a spell and press Enter."
+autowrap_mode = 2
 
 [node name="SpellTextInput" type="LineEdit" parent="VBoxContainer" unique_id=1649170480]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/normal = SubResource("StyleBoxFlat_55dxo")
+placeholder_text = "Spell name or invented incantation"
+max_length = 120
 
-[node name="SpellHistoryPanel" type="PanelContainer" parent="." unique_id=2023896037]
+[node name="GenerateButton" type="Button" parent="VBoxContainer" unique_id=262026714]
+layout_mode = 2
+focus_mode = 0
+text = "Create recipe"
+
+[node name="SpellBookPanel" type="PanelContainer" parent="." unique_id=2023896037]
 layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
+anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = -300.0
+offset_left = 20.0
 offset_top = 20.0
-offset_right = -20.0
+offset_right = 360.0
 offset_bottom = -20.0
-grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBox_history_panel")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SpellHistoryPanel" unique_id=380076631]
+[node name="VBoxContainer" type="VBoxContainer" parent="SpellBookPanel" unique_id=380076631]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Title" type="Label" parent="SpellHistoryPanel/VBoxContainer" unique_id=647079770]
+[node name="Title" type="Label" parent="SpellBookPanel/VBoxContainer" unique_id=647079770]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
 theme_override_font_sizes/font_size = 24
-text = "Spell history"
+text = "Your spellbook"
 horizontal_alignment = 1
 
-[node name="Counter" type="Label" parent="SpellHistoryPanel/VBoxContainer" unique_id=437869386]
+[node name="Counter" type="Label" parent="SpellBookPanel/VBoxContainer" unique_id=437869386]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.82, 0.76, 0.8, 1)
 theme_override_font_sizes/font_size = 14
-text = "0 / 10 spells cast"
+text = "0 / 10 spells crafted"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="SpellHistoryPanel/VBoxContainer" unique_id=1532558896]
+[node name="Hint" type="Label" parent="SpellBookPanel/VBoxContainer" unique_id=146391382]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Complete a cast to add a spell.
+Finish when your spellbook is ready."
+autowrap_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SpellBookPanel/VBoxContainer" unique_id=1532558896]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="SpellList" type="VBoxContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer" unique_id=2063333834]
+[node name="SpellList" type="VBoxContainer" parent="SpellBookPanel/VBoxContainer/ScrollContainer" unique_id=2063333834]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="SpellEntryTemplate" type="PanelContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList" unique_id=898963786]
+[node name="EmptyLabel" type="Label" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList" unique_id=1961616441]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Your spellbook is empty.
+Craft your first spell to begin."
+autowrap_mode = 2
+
+[node name="SpellEntryTemplate" type="PanelContainer" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList" unique_id=898963786]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBox_spell_entry")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate" unique_id=1910156222]
+[node name="VBoxContainer" type="VBoxContainer" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate" unique_id=1910156222]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="SpellName" type="Label" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=61857217]
+[node name="SpellName" type="Label" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=61857217]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
 theme_override_font_sizes/font_size = 20
-text = "Cinder"
+text = "Crafted spell"
+autowrap_mode = 2
 
-[node name="Components" type="HFlowContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=473661010]
+[node name="Components" type="HFlowContainer" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=473661010]
 layout_mode = 2
 theme_override_constants/h_separation = 4
 theme_override_constants/v_separation = 4
 
-[node name="Component1" type="PanelContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Components" unique_id=1038734749]
+[node name="Component1" type="PanelContainer" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Components" unique_id=1038734749]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBox_component_slot")
 
-[node name="Panel" type="Panel" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Components/Component1" unique_id=1202131903]
+[node name="Panel" type="Panel" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Components/Component1" unique_id=1202131903]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_x15ge")
 
-[node name="Stats" type="HBoxContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=2143711848]
+[node name="Stats" type="HBoxContainer" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=2143711848]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Damage" type="PanelContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats" unique_id=250125508]
+[node name="Time" type="PanelContainer" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats" unique_id=250125508]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBox_tag")
 
-[node name="Label" type="Label" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats/Damage" unique_id=546233079]
+[node name="Label" type="Label" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats/Time" unique_id=546233079]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.82, 0.76, 0.8, 1)
 theme_override_font_sizes/font_size = 13
-text = "75 damage"
+text = "0.00 s"
 
-[node name="Best" type="PanelContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats" unique_id=1508049098]
+[node name="Mistakes" type="PanelContainer" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats" unique_id=1508049098]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBox_tag")
 
-[node name="Label" type="Label" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats/Best" unique_id=313182934]
+[node name="Label" type="Label" parent="SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats/Mistakes" unique_id=313182934]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.82, 0.76, 0.8, 1)
 theme_override_font_sizes/font_size = 13
-text = "Best: Ignis"
+text = "0 mistakes"
+
+[node name="FinishButton" type="Button" parent="SpellBookPanel/VBoxContainer" unique_id=2039008206]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+disabled = true
+text = "Move to battlefield"
 
 [node name="SpellComponentsPanel" type="PanelContainer" parent="." unique_id=1937139271]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 383.0
-offset_top = 74.0
-offset_right = -342.0
-offset_bottom = -574.0
+offset_left = 380.0
+offset_top = 120.0
+offset_right = -20.0
+offset_bottom = 230.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_k0akp")
@@ -316,15 +342,19 @@ offset_transform_position = Vector2(0, -6)
 text = "Arcanum"
 
 [node name="SpellNameLabel" type="Label" parent="." unique_id=1660862831]
-layout_mode = 0
-offset_left = 385.0
-offset_top = 27.0
-offset_right = 784.0
-offset_bottom = 69.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 380.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 70.0
 theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
-theme_override_font_sizes/font_size = 30
-text = "Set to correct Spell Name!"
+theme_override_font_sizes/font_size = 25
+text = "Craft a spell"
 horizontal_alignment = 1
+autowrap_mode = 2
+max_lines_visible = 2
 
 [node name="CurrentComponentPanel" type="PanelContainer" parent="." unique_id=389015251]
 custom_minimum_size = Vector2(200, 200)
@@ -334,6 +364,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = 60.0
+offset_top = -110.0
+offset_right = 300.0
+offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_x15ge")
@@ -354,3 +388,71 @@ theme_override_colors/font_color = Color(0.9490196, 0.8784314, 0.7490196, 1)
 theme_override_font_sizes/font_size = 24
 text = "Press Key"
 horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="." unique_id=435467147]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 380.0
+offset_top = 74.0
+offset_right = -20.0
+offset_bottom = 112.0
+theme_override_font_sizes/font_size = 15
+text = "Invent a name or try a familiar spell."
+horizontal_alignment = 1
+autowrap_mode = 2
+max_lines_visible = 2
+
+[node name="KeyGuide" type="Label" parent="." unique_id=877868674]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 380.0
+offset_top = -55.0
+offset_right = -20.0
+offset_bottom = -8.0
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ResultPanel" type="PanelContainer" parent="." unique_id=1362246410]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = -160.0
+offset_right = 435.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBox_history_panel")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ResultPanel" unique_id=23623755]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="ResultPanel/VBoxContainer" unique_id=107641353]
+layout_mode = 2
+theme_override_font_sizes/font_size = 29
+text = "Spellbook ready"
+horizontal_alignment = 1
+
+[node name="Summary" type="Label" parent="ResultPanel/VBoxContainer" unique_id=689631190]
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+text = "Your spells are saved."
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="ResultPanel/VBoxContainer" unique_id=555422921]
+layout_mode = 2
+text = "Back to crafting"
+
+[node name="MenuButton" type="Button" parent="ResultPanel/VBoxContainer" unique_id=445593622]
+layout_mode = 2
+text = "Main menu"

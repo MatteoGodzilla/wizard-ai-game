@@ -1,11 +1,12 @@
 extends Control
 
-## Pause / options menu. Toggled with the Esc key; pauses the game while open.
+## Pause menu toggled with Esc. The previous keyboard focus returns on resume.
 
 # Path (not PackedScene) to avoid a cyclic dependency: main menu -> game -> options -> main menu
 @export_file("*.tscn") var main_menu_scene: String = "res://Scenes/main_menu.tscn"
 
 @onready var resume_button: Button = $CenterContainer/PanelContainer/VBoxContainer/ResumeButton
+var _previous_focus: Control
 
 
 func _ready() -> void:
@@ -25,6 +26,7 @@ func _input(event: InputEvent) -> void:
 
 
 func open_menu() -> void:
+	_previous_focus = get_viewport().gui_get_focus_owner()
 	visible = true
 	get_tree().paused = true
 	resume_button.grab_focus()
@@ -33,6 +35,8 @@ func open_menu() -> void:
 func close_menu() -> void:
 	visible = false
 	get_tree().paused = false
+	if is_instance_valid(_previous_focus) and _previous_focus.is_visible_in_tree():
+		_previous_focus.grab_focus()
 
 
 func _on_resume_button_pressed() -> void:

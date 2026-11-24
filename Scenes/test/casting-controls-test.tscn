@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://qu153rkiiqyi" path="res://Fantasy_Assets/Element_Images/Corpus.png" id="11_2fv61"]
 [ext_resource type="Texture2D" uid="uid://b8vrjduduh5b3" path="res://Fantasy_Assets/Element_Images/Arcanum.png" id="12_2pmli"]
 [ext_resource type="PackedScene" uid="uid://ca1xy5l67xvay" path="res://Scenes/options_ui.tscn" id="12_savvf"]
+[ext_resource type="Script" path="res://Scripts/UITest.gd" id="13_labels"]
 
 [node name="Node2D" type="Node2D" unique_id=213238332]
 
@@ -29,6 +30,7 @@ script = ExtResource("2_26m1g")
 typer = NodePath("../CastTyper")
 
 [node name="Control" type="Control" parent="." unique_id=1513389826]
+script = ExtResource("13_labels")
 custom_minimum_size = Vector2(177.875, 79.915)
 layout_mode = 3
 anchors_preset = 0
