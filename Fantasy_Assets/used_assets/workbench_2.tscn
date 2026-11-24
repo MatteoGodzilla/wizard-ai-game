@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://dwmmeldrfam5"]
+
+[ext_resource type="PackedScene" uid="uid://d2ehitsbxhu5v" path="res://Fantasy_Assets/glTF/Workbench.gltf" id="1_gcswo"]
+
+[node name="Workbench2" unique_id=1022298663 instance=ExtResource("1_gcswo")]

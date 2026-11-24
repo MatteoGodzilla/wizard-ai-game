@@ -1,0 +1,356 @@
+[gd_scene format=3 uid="uid://cvro2y7vkh568"]
+
+[ext_resource type="Script" uid="uid://d3sa05o36drt" path="res://Scripts/spell_maker_ui.gd" id="1_bnskj"]
+[ext_resource type="Texture2D" uid="uid://by00dcj2f8mon" path="res://Fantasy_Assets/images/spell_maker_bg.jpg" id="2_50xa4"]
+[ext_resource type="Texture2D" uid="uid://b8vrjduduh5b3" path="res://Fantasy_Assets/Element_Images/Arcanum.png" id="2_umbu0"]
+[ext_resource type="Texture2D" uid="uid://byl1xewnoqhub" path="res://Fantasy_Assets/Element_Images/Aer.png" id="3_dam7g"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rtqtc"]
+texture = ExtResource("2_50xa4")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_55dxo"]
+bg_color = Color(0.21960784, 0.16862746, 0.25882354, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.5019608, 0.6392157, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_history_panel"]
+content_margin_left = 14.0
+content_margin_top = 12.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0.16, 0.12, 0.19, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.56, 0.46, 0.6, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_spell_entry"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.22, 0.17, 0.26, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.5, 0.64, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_component_slot"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+bg_color = Color(0.28, 0.22, 0.32, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.6, 0.5, 0.64, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_x15ge"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_tag"]
+content_margin_left = 8.0
+content_margin_top = 3.0
+content_margin_right = 8.0
+content_margin_bottom = 3.0
+bg_color = Color(0.28, 0.22, 0.32, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.6, 0.5, 0.64, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k0akp"]
+bg_color = Color(0.16078432, 0.12156863, 0.1882353, 0.9490196)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.56078434, 0.45882353, 0.6, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+corner_detail = 1
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rtqtc"]
+bg_color = Color(0.2784314, 0.21960784, 0.32156864, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.56078434, 0.45882353, 0.6, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+corner_detail = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ndsek"]
+texture = ExtResource("2_umbu0")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x15ge"]
+bg_color = Color(0.16078432, 0.12156863, 0.1882353, 0)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k0akp"]
+texture = ExtResource("3_dam7g")
+
+[node name="SpellMakerUi" type="Control" unique_id=826777757]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bnskj")
+
+[node name="Panel" type="Panel" parent="." unique_id=752793853]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_rtqtc")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1496552351]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -132.0
+offset_top = 133.0
+offset_right = 138.0
+offset_bottom = 217.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="SpellPromt" type="Label" parent="VBoxContainer" unique_id=1866326816]
+layout_mode = 2
+text = "What spell are you going to cook..."
+
+[node name="SpellTextInput" type="LineEdit" parent="VBoxContainer" unique_id=1649170480]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_55dxo")
+
+[node name="SpellHistoryPanel" type="PanelContainer" parent="." unique_id=2023896037]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBox_history_panel")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SpellHistoryPanel" unique_id=380076631]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="SpellHistoryPanel/VBoxContainer" unique_id=647079770]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
+theme_override_font_sizes/font_size = 24
+text = "Spell history"
+horizontal_alignment = 1
+
+[node name="Counter" type="Label" parent="SpellHistoryPanel/VBoxContainer" unique_id=437869386]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.76, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "0 / 10 spells cast"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SpellHistoryPanel/VBoxContainer" unique_id=1532558896]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SpellList" type="VBoxContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer" unique_id=2063333834]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="SpellEntryTemplate" type="PanelContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList" unique_id=898963786]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBox_spell_entry")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate" unique_id=1910156222]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SpellName" type="Label" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=61857217]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
+theme_override_font_sizes/font_size = 20
+text = "Cinder"
+
+[node name="Components" type="HFlowContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=473661010]
+layout_mode = 2
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+
+[node name="Component1" type="PanelContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Components" unique_id=1038734749]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBox_component_slot")
+
+[node name="Panel" type="Panel" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Components/Component1" unique_id=1202131903]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_x15ge")
+
+[node name="Stats" type="HBoxContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer" unique_id=2143711848]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Damage" type="PanelContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats" unique_id=250125508]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBox_tag")
+
+[node name="Label" type="Label" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats/Damage" unique_id=546233079]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.76, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "75 damage"
+
+[node name="Best" type="PanelContainer" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats" unique_id=1508049098]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBox_tag")
+
+[node name="Label" type="Label" parent="SpellHistoryPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate/VBoxContainer/Stats/Best" unique_id=313182934]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.76, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "Best: Ignis"
+
+[node name="SpellComponentsPanel" type="PanelContainer" parent="." unique_id=1937139271]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 383.0
+offset_top = 74.0
+offset_right = -366.0
+offset_bottom = -450.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_k0akp")
+
+[node name="ComponentsScroll" type="ScrollContainer" parent="SpellComponentsPanel" unique_id=209180054]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/scrollbar_h_separation = -1
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+scroll_horizontal_by_default = true
+
+[node name="ComponentsBar" type="HBoxContainer" parent="SpellComponentsPanel/ComponentsScroll" unique_id=277714892]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="SpellComponentTemplate" type="PanelContainer" parent="SpellComponentsPanel/ComponentsScroll/ComponentsBar" unique_id=1370593074]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_rtqtc")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SpellComponentsPanel/ComponentsScroll/ComponentsBar/SpellComponentTemplate" unique_id=1432595728]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Panel" type="Panel" parent="SpellComponentsPanel/ComponentsScroll/ComponentsBar/SpellComponentTemplate/VBoxContainer" unique_id=470143660]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ndsek")
+
+[node name="Label" type="Label" parent="SpellComponentsPanel/ComponentsScroll/ComponentsBar/SpellComponentTemplate/VBoxContainer" unique_id=838788634]
+layout_mode = 2
+size_flags_horizontal = 4
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -6)
+text = "Arcanum"
+
+[node name="SpellNameLabel" type="Label" parent="." unique_id=1660862831]
+layout_mode = 0
+offset_left = 385.0
+offset_top = 27.0
+offset_right = 784.0
+offset_bottom = 69.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
+theme_override_font_sizes/font_size = 30
+text = "Set to correct Spell Name!"
+horizontal_alignment = 1
+
+[node name="CurrentComponentPanel" type="PanelContainer" parent="." unique_id=389015251]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_x15ge")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CurrentComponentPanel" unique_id=997994191]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Panel" type="Panel" parent="CurrentComponentPanel/VBoxContainer" unique_id=304907214]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_k0akp")
+
+[node name="PressKeyLabel" type="Label" parent="CurrentComponentPanel/VBoxContainer" unique_id=75388764]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.8784314, 0.7490196, 1)
+theme_override_font_sizes/font_size = 24
+text = "Press Key"
+horizontal_alignment = 1

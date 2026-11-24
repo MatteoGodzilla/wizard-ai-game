@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://bf3ob6aaqc5u0"]
+
+[ext_resource type="Script" uid="uid://npyum54l57pr" path="res://Scripts/cast_typer.gd" id="1_ihy57"]
+[ext_resource type="Script" uid="uid://dxy3nleql3xtp" path="res://Scripts/cast_typer_test.gd" id="2_26m1g"]
+[ext_resource type="Script" uid="uid://7j4fkr5ek5jg" path="res://Scripts/UITest.gd" id="3_ryy0t"]
+[ext_resource type="PackedScene" uid="uid://cvro2y7vkh568" path="res://Scenes/spell_maker_ui.tscn" id="4_spellui"]
+[ext_resource type="Texture2D" uid="uid://bysrt5h5xltvh" path="res://Fantasy_Assets/Element_Images/Aqua.png" id="5_savvf"]
+[ext_resource type="Texture2D" uid="uid://wy1k8e5rnyvq" path="res://Fantasy_Assets/Element_Images/ignis.png" id="6_4pta1"]
+[ext_resource type="Texture2D" uid="uid://byl1xewnoqhub" path="res://Fantasy_Assets/Element_Images/Aer.png" id="6_p0c1n"]
+[ext_resource type="Texture2D" uid="uid://jtpwbysn87w" path="res://Fantasy_Assets/Element_Images/Terra.png" id="8_l7at5"]
+[ext_resource type="Texture2D" uid="uid://cl7mmutr0owk1" path="res://Fantasy_Assets/Element_Images/Lux.png" id="9_uhxyw"]
+[ext_resource type="Texture2D" uid="uid://cso8t4hwn6ho4" path="res://Fantasy_Assets/Element_Images/Tenebrae.png" id="10_fxg7c"]
+[ext_resource type="Texture2D" uid="uid://qu153rkiiqyi" path="res://Fantasy_Assets/Element_Images/Corpus.png" id="11_2fv61"]
+[ext_resource type="Texture2D" uid="uid://b8vrjduduh5b3" path="res://Fantasy_Assets/Element_Images/Arcanum.png" id="12_2pmli"]
+
+[node name="Node2D" type="Node2D" unique_id=213238332]
+
+[node name="CastTyper" type="Node" parent="." unique_id=906152024]
+script = ExtResource("1_ihy57")
+
+[node name="CastTyperTest" type="Node" parent="." unique_id=1590826190 node_paths=PackedStringArray("typer")]
+script = ExtResource("2_26m1g")
+typer = NodePath("../CastTyper")
+
+[node name="Control" type="Control" parent="." unique_id=1513389826]
+custom_minimum_size = Vector2(177.875, 79.915)
+layout_mode = 3
+anchors_preset = 0
+offset_top = 1.0
+offset_right = 1152.0
+offset_bottom = 647.0
+script = ExtResource("3_ryy0t")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control" unique_id=545027165]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpellMakerUi" parent="Control" unique_id=1696368555 node_paths=PackedStringArray("spell_source") instance=ExtResource("4_spellui")]
+layout_mode = 1
+spell_source = NodePath("../../CastTyperTest")
+element_images = Array[Texture2D]([ExtResource("5_savvf"), ExtResource("6_p0c1n"), ExtResource("6_4pta1"), ExtResource("8_l7at5"), ExtResource("9_uhxyw"), ExtResource("10_fxg7c"), ExtResource("11_2fv61"), ExtResource("12_2pmli")])
+
+[connection signal="on_failed_cast" from="CastTyper" to="Control" method="_on_cast_typer_on_failed_cast"]
+[connection signal="on_successful_cast" from="CastTyper" to="Control" method="_on_cast_typer_on_successful_cast"]
+[connection signal="setup_graphics" from="CastTyper" to="Control" method="_on_cast_typer_setup_graphics"]
+[connection signal="update_graphics" from="CastTyper" to="Control" method="_on_cast_typer_update_graphics"]

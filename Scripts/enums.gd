@@ -47,3 +47,17 @@ func spell_to_string(spell: Element):
 		Element.CORPUS: return "Corpus"
 		Element.ARCANUM: return "Arcanum"
 		_: return ""
+		
+func spell_to_key(spell: Spell):
+	var press_str = "Press "
+	match spell: 
+		Spell.AQUA: press_str+= "Q"
+		Spell.AER: press_str+= "W"
+		Spell.IGNIS: press_str+= "E"
+		Spell.TERRA: press_str+= "R"
+		Spell.LUX: press_str+= "A"
+		Spell.TENEBRAE: press_str+= "S"
+		Spell.CORPUS: press_str+= "D"
+		Spell.ARCANUM: press_str+= "F"
+		_: press_str+= "invalid"
+	return press_str

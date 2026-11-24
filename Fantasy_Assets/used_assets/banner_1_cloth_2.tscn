@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://dmkdpt67uecs4"]
+
+[ext_resource type="PackedScene" uid="uid://doftmj4x8v03w" path="res://Fantasy_Assets/glTF/Banner_1_Cloth.gltf" id="1_q7ado"]
+
+[node name="Banner_1_Cloth2" unique_id=383227861 instance=ExtResource("1_q7ado")]

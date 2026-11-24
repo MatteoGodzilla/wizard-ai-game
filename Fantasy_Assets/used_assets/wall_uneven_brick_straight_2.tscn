@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://cdyxtrlp2p3ob"]
+
+[ext_resource type="PackedScene" uid="uid://cfyyxx1c5napy" path="res://Fantasy_Assets/Medieval_Village_Assets/glTF/Wall_UnevenBrick_Straight.gltf" id="1_xn5rt"]
+
+[node name="Wall_UnevenBrick_Straight2" unique_id=1087723393 instance=ExtResource("1_xn5rt")]
