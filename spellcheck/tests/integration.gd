@@ -42,6 +42,8 @@ func _ready() -> void:
 
 func _run() -> void:
 	var tree := get_tree()
+	for descriptor: SFXDescriptor in Audio.sfx_descriptions:
+		_check(AudioServer.get_bus_index(descriptor.id) >= 0 and descriptor.player.bus == descriptor.id, "workshop sound effects use registered audio buses")
 	var service := tree.root.get_node("Crafting") as Session
 	var save := _folder.path_join("spellbook.json")
 	service.book = Spellbook.new(save)

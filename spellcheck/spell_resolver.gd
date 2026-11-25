@@ -89,7 +89,13 @@ func _on_chat(
 		_finish(token, {"error": "Pull " + str(_config["model"]) + " into local Ollama to interpret new spells."})
 		return
 	if status != 200:
-		_finish(token, {"error": "The sandbox provider returned HTTP %d while interpreting the spell." % status})
+		var reason := provider_error(_config["provider"], status, body.get_string_from_utf8())
+		if status == 400 and _config["provider"] == "groq" and _error_code(body.get_string_from_utf8()) == "json_validate_failed":
+			if not repaired and Time.get_ticks_msec() - _started < TIME_BUDGET_MS - 1500:
+				_clear_http()
+				_send(token, input, "Return a single complete spell as a JSON object with no surrounding text.")
+				return
+		_finish(token, {"error": reason})
 		return
 	var envelope: Variant = JSON.parse_string(body.get_string_from_utf8())
 	if _config["provider"] != "ollama":
@@ -111,6 +117,27 @@ func _on_chat(
 			_send(token, input, payload["error"], draft, impact_only)
 			return
 	_finish(token, payload)
+
+
+static func _error_code(body: String) -> String:
+	var envelope: Variant = JSON.parse_string(body)
+	if envelope is Dictionary and envelope.get("error") is Dictionary:
+		return str(envelope["error"].get("code", ""))
+	return ""
+
+
+static func provider_error(provider: String, status: int, body: String) -> String:
+	var provider_name: String = {"groq": "Groq", "google": "Google AI Studio", "openrouter": "OpenRouter", "ollama": "Ollama"}.get(provider, "The sandbox provider")
+	match status:
+		400:
+			if provider == "groq" and _error_code(body) == "json_validate_failed":
+				return "Groq could not generate valid spell JSON. Retry, or describe the arena effect in one short sentence."
+			return "%s rejected the sandbox request (HTTP 400). Check that SPELLCHECK_MODEL supports JSON output." % provider_name
+		401, 403:
+			return "%s denied the sandbox request (HTTP %d). Check your API key and model access." % [provider_name, status]
+		429:
+			return "%s limited sandbox requests (HTTP 429). Try again in a moment." % provider_name
+	return "%s returned HTTP %d while interpreting the spell." % [provider_name, status]
 
 
 func _finish(token: int, payload: Dictionary) -> void:

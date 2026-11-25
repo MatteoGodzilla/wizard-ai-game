@@ -3,6 +3,13 @@ extends SceneTree
 const Providers = preload("res://Scripts/ai/provider_config.gd")
 const WorkshopPrompt = preload("res://Scripts/ai/spell_prompt.gd")
 const SandboxCatalog = preload("res://spellcheck/spell_catalog.gd")
+const SandboxResolver = preload("res://spellcheck/spell_resolver.gd")
+
+class RetryFixture extends "res://spellcheck/spell_resolver.gd":
+	var corrections: Array[String] = []
+
+	func _send(_token: int, _input: Dictionary, correction: String = "", _draft: String = "", _impact_only: bool = false) -> void:
+		corrections.append(correction)
 
 var _failures := 0
 
@@ -31,6 +38,20 @@ func _initialize() -> void:
 	_check(Providers.completion_text(envelope) == "{}", "compatible reply normalizes JSON text")
 	envelope["choices"][0]["finish_reason"] = "length"
 	_check(Providers.completion_text(envelope) == null, "truncated reply is rejected")
+	var invalid_json := '{"error":{"code":"json_validate_failed","failed_generation":"private draft"}}'
+	var reason := SandboxResolver.provider_error("groq", 400, invalid_json)
+	_check(reason.contains("valid spell JSON") and not reason.contains("private draft"), "Groq JSON errors have safe retry feedback")
+	_check(SandboxResolver.provider_error("groq", 400, "{}").contains("SPELLCHECK_MODEL"), "other Groq 400 responses have configuration feedback")
+	var retry := RetryFixture.new()
+	retry._config = {"provider": "groq"}
+	retry._started = Time.get_ticks_msec()
+	var outcomes: Array[Dictionary] = []
+	retry.completed.connect(func(_token: int, outcome: Dictionary) -> void: outcomes.append(outcome))
+	retry._on_chat(HTTPRequest.RESULT_SUCCESS, 400, [], invalid_json.to_utf8_buffer(), 1, {}, false)
+	_check(retry.corrections.size() == 1 and outcomes.is_empty(), "Groq gets one repair request after invalid JSON")
+	retry._on_chat(HTTPRequest.RESULT_SUCCESS, 400, [], invalid_json.to_utf8_buffer(), 1, {}, true)
+	_check(retry.corrections.size() == 1 and outcomes.size() == 1, "a second JSON failure returns the pending reason")
+	retry.free()
 	quit(_failures)
 
 

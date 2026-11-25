@@ -11,10 +11,11 @@ var last_bgm_index = -1
 
 func _ready() -> void:
 	AudioServer.set_bus_volume_db(0, bgm_initial_volume_db)
-	for i in sfx_descriptions.size():
-		var desc = sfx_descriptions[i];
-		AudioServer.add_bus(i + 2)
-		AudioServer.set_bus_name(i + 2, desc.id)
+	for desc: SFXDescriptor in sfx_descriptions:
+		if AudioServer.get_bus_index(desc.id) == -1:
+			var bus_index := AudioServer.bus_count
+			AudioServer.add_bus()
+			AudioServer.set_bus_name(bus_index, desc.id)
 		var dedicated_player = AudioStreamPlayer.new()
 		dedicated_player.bus = desc.id
 		add_child(dedicated_player)
