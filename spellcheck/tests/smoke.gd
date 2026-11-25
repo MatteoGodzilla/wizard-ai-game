@@ -243,7 +243,7 @@ func _utility_runtime() -> void:
 		Input.action_press("spellcheck_right")
 		await create_timer(0.26).timeout
 		Input.action_release("spellcheck_right")
-		_check(flying.position.is_equal_approx(frozen_at), "world time freezes projectile movement")
+		_check(is_instance_valid(flying) and flying.position.is_equal_approx(frozen_at), "world time freezes projectile movement")
 		_check(not arena._player.position.is_equal_approx(caster_at), "the caster can move during stopped time")
 		await create_timer(0.85).timeout
 		_check(arena._rules.value(arena, "TIME_SCALE") == 1.0, "the arena clock resumes on real time")
@@ -512,6 +512,9 @@ func _prepare(spell_name: String) -> void:
 
 
 func _click_toward(point: Vector3) -> void:
+	# These cases test spell effects. Clear the wall-clock click cooldown so a
+	# headless simulation timer can advance independently of that clock.
+	_scene._arena._last_cast = Time.get_ticks_msec() - 1000
 	var click := InputEventMouseButton.new()
 	click.button_index = MOUSE_BUTTON_LEFT
 	click.pressed = true

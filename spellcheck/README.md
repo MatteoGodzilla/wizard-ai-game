@@ -1,6 +1,6 @@
 # Workshop and Spellcheck
 
-Choose **Play** to enter the workshop. To try **Fireball** immediately, choose **Review spellbook** and **Enter sandbox**. Use **Back to Workshop** to return.
+Choose **Play** to enter the workshop. To try **Fireball** immediately, select **Go to sandbox** in the upper-right corner. The spellbook review also has an **Enter sandbox** button. Use **Back to Workshop** to return.
 
 ## Run on Windows
 

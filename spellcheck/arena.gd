@@ -2,6 +2,7 @@ extends Node3D
 
 signal charging(seconds: float)
 signal released
+signal cast_performed
 signal notice(text: String)
 
 const Intent = preload("res://spellcheck/spell_intent.gd")
@@ -225,6 +226,7 @@ func _perform_cast(spell: Dictionary, direction: Vector3, source: int, target_po
 			_finish_spell(spell, source, origin, direction)
 		_:
 			_launch_projectile(spell, origin, direction, source)
+	cast_performed.emit()
 
 
 func _launch_projectile(spell: Dictionary, origin: Vector3, direction: Vector3, source: int) -> void:

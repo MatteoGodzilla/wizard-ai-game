@@ -27,6 +27,7 @@ const COLOR_DONE := Color(0.128, 0.429, 0.16)
 @onready var empty_label: Label = $SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/EmptyLabel
 @onready var entry_template: PanelContainer = $SpellBookPanel/VBoxContainer/ScrollContainer/SpellList/SpellEntryTemplate
 @onready var finish_button: Button = $SpellBookPanel/VBoxContainer/FinishButton
+@onready var sandbox_shortcut: Button = $SandboxShortcut
 @onready var components_scroll: ScrollContainer = $SpellComponentsPanel/ComponentsScroll
 @onready var components_bar: HBoxContainer = $SpellComponentsPanel/ComponentsScroll/ComponentsBar
 @onready var current_component_template: PanelContainer = $SpellComponentsPanel/ComponentsScroll/ComponentsBar/SpellComponentTemplate
@@ -55,6 +56,7 @@ func _ready() -> void:
 			_on_LineEdit_text_entered(spell_text_input.text)
 	)
 	finish_button.pressed.connect(func() -> void: finish_requested.emit())
+	sandbox_shortcut.pressed.connect(func() -> void: sandbox_requested.emit())
 	$ResultPanel/VBoxContainer/ContinueButton.pressed.connect(func() -> void: continue_requested.emit())
 	$ResultPanel/VBoxContainer/SandboxButton.pressed.connect(func() -> void: sandbox_requested.emit())
 	$ResultPanel/VBoxContainer/MenuButton.pressed.connect(func() -> void: menu_requested.emit())
@@ -79,6 +81,9 @@ func _ready() -> void:
 			_practice_typer.update_graphics.connect(_on_typing_progress)
 		finish_button.hide()
 		spell_description_input.hide()
+	sandbox_shortcut.visible = spell_source == null
+	if sandbox_shortcut.visible:
+		$SpellNameLabel.offset_right = sandbox_shortcut.offset_left - 12.0
 	$Panel.visible = spell_source != null
 	_update_counter()
 	current_component_panel.hide()

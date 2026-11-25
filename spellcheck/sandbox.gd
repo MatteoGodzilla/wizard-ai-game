@@ -145,6 +145,7 @@ func _replace_arena() -> void:
 	_arena = Arena.new()
 	_arena.charging.connect(func(seconds: float) -> void: _ui.feedback("Charging for %.1f s…" % seconds))
 	_arena.released.connect(func() -> void: _ui.feedback("Spell released. Left click to cast again."))
+	_arena.cast_performed.connect(Audio.trigger_sfx.bind(&"spell_cast"))
 	_arena.notice.connect(func(message: String) -> void: _ui.feedback(message))
 	add_child(_arena)
 

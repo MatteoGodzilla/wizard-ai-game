@@ -189,6 +189,7 @@ func _refresh_book() -> void:
 	var records: Array[Dictionary] = Crafting.workshop_records()
 	ui.show_workshop_records(records, phase == Phase.ENTERING)
 	ui.set_finish_enabled(phase == Phase.ENTERING)
+	ui.sandbox_shortcut.disabled = phase not in [Phase.ENTERING, Phase.FINISHED]
 
 
 func _retry_spell(id: String, description: String) -> void:
@@ -200,7 +201,7 @@ func _retry_spell(id: String, description: String) -> void:
 
 
 func _enter_sandbox() -> void:
-	if phase != Phase.FINISHED:
+	if phase not in [Phase.ENTERING, Phase.FINISHED]:
 		return
 	var error := get_tree().change_scene_to_file("res://spellcheck/sandbox.tscn")
 	if error != OK:

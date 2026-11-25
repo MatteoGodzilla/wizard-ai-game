@@ -42,8 +42,12 @@ func _ready() -> void:
 
 func _run() -> void:
 	var tree := get_tree()
+	var cast_audio: AudioStreamPlayer
 	for descriptor: SFXDescriptor in Audio.sfx_descriptions:
-		_check(AudioServer.get_bus_index(descriptor.id) >= 0 and descriptor.player.bus == descriptor.id, "workshop sound effects use registered audio buses")
+		_check(AudioServer.get_bus_index(descriptor.id) >= 0 and descriptor.player.bus == descriptor.id, "sound effects use registered audio buses")
+		if descriptor.id == &"spell_cast":
+			cast_audio = descriptor.player
+	_check(cast_audio != null, "the game registers a spell-cast sound")
 	var service := tree.root.get_node("Crafting") as Session
 	var save := _folder.path_join("spellbook.json")
 	service.book = Spellbook.new(save)
@@ -61,8 +65,16 @@ func _run() -> void:
 	await tree.scene_changed
 	var workshop = tree.current_scene
 	_check(workshop.scene_file_path == WORKSHOP, "Play opens the workshop")
+	_check(workshop.ui.sandbox_shortcut.is_visible_in_tree() and not workshop.ui.sandbox_shortcut.disabled, "the sandbox shortcut is available in a fresh workshop")
+	workshop.ui.sandbox_shortcut.pressed.emit()
+	await tree.scene_changed
+	_check(tree.current_scene.scene_file_path == SANDBOX, "the shortcut skips spellbook review")
+	tree.current_scene._ui.workshop_requested.emit()
+	await tree.scene_changed
+	workshop = tree.current_scene
 
 	_submit(workshop, "  Jade Quarry  ", DESCRIPTION)
+	_check(workshop.ui.sandbox_shortcut.disabled, "the shortcut is disabled during a crafting attempt")
 	_check(workshop.current_metadata.get("source") == "fallback", "synchronous recipe fallback starts the existing QTE")
 	_check(_workers.size() == 1 and _workers.back().description == DESCRIPTION, "the behavior request receives the player description independently")
 	_check(service.begin("jade   quarry", "").has("error"), "active names are matched without case or spacing")
@@ -84,6 +96,8 @@ func _run() -> void:
 	_check(sandbox._ui._list.item_count == 2, "the open sandbox book refreshes after a background unlock")
 	_check(Spellbook.new(save).record(id).get("state") == "unlocked", "validated behavior updates the saved record")
 	sandbox._submit("jAde quArry")
+	if cast_audio != null:
+		_check(cast_audio.stream == null, "equipping is silent")
 	for step in 2:
 		await tree.physics_frame
 	var rock: Node3D
@@ -99,11 +113,28 @@ func _run() -> void:
 		click.button_index = MOUSE_BUTTON_LEFT
 		click.pressed = true
 		sandbox._unhandled_input(click)
+		sandbox._unhandled_input(click)
+		_check(sandbox._arena._pending_casts.size() == 1, "the click cooldown rejects an immediate repeat")
 		for step in 3:
 			await tree.physics_frame
 		_check(sandbox._arena._rules.value(rock, "TINT") == expected, "casting changes the tint of the arena rock")
 		var mesh: MeshInstance3D = sandbox._arena._targets[rock]["meshes"].keys()[0]
 		_check(mesh.material_override.albedo_color == expected, "the arena applies the new tint to the rock mesh")
+		if cast_audio != null:
+			_check(cast_audio.playing, "an instant cast plays the spell-cast sound")
+			cast_audio.stop()
+			cast_audio.stream = null
+			sandbox._arena._last_cast = Time.get_ticks_msec() - 1000
+			sandbox._equipped["charge"] = 0.3
+			sandbox._unhandled_input(click)
+			for step in 2:
+				await tree.physics_frame
+			_check(not sandbox._arena._charge.is_empty() and cast_audio.stream == null, "charging is silent until the spell releases")
+			for step in 24:
+				if sandbox._arena._charge.is_empty():
+					break
+				await tree.physics_frame
+			_check(cast_audio.playing, "releasing a charged spell plays the spell-cast sound")
 	sandbox._submit("an unregistered incantation")
 	_check(_workers.size() == 1, "sandbox equip and unknown text make zero generation requests")
 	sandbox._ui.workshop_requested.emit()
