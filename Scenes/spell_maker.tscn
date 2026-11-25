@@ -29,6 +29,12 @@ script = ExtResource("1_game")
 
 [node name="Background" parent="." unique_id=1173605099 instance=ExtResource("2_background")]
 
+[node name="Torch_Metal2" parent="Background/Torches" parent_id_path=PackedInt32Array(1173605099, 470544179) index="0" unique_id=1139199699]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0049757, 1.6668274, -1.0691857)
+
+[node name="Wall_UnevenBrick_Straight7" parent="Background/Walls" parent_id_path=PackedInt32Array(1173605099, 1089621938) index="7" unique_id=1733206064]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.008603573, 2.3841858e-07, -2.9719)
+
 [node name="BookGroup_Medium_12" parent="Background" unique_id=1499047919 instance=ExtResource("13_4kt01")]
 transform = Transform3D(-0.99999994, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -0.99999994, 0.10048497, 0.88342524, 3.4348717)
 
@@ -49,12 +55,6 @@ transform = Transform3D(1.9979035, -0.04267201, -0.08099752, 0, 1.7694606, -0.93
 
 [node name="Workbench2" parent="Background" unique_id=1022298663 instance=ExtResource("16_p78wc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49283183, 0, 3.1318526)
-
-[node name="Torch_Metal2" parent="Background/Torches" parent_id_path=PackedInt32Array(1173605099, 470544179) index="0" unique_id=1139199699]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0049757, 1.6668274, -1.0691857)
-
-[node name="Wall_UnevenBrick_Straight7" parent="Background/Walls" parent_id_path=PackedInt32Array(1173605099, 1089621938) index="7" unique_id=1733206064]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.008603573, 2.3841858e-07, -2.9719)
 
 [node name="Prop_Crate4" parent="Background" unique_id=1996230078 instance=ExtResource("3_yui8b")]
 transform = Transform3D(0.45558834, 0, 0.32481787, 0, 0.6231951, 0, -0.33456653, 0, 0.44231334, 0.2793445, 0, -0.07509619)

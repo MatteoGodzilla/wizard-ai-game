@@ -169,19 +169,27 @@ autowrap_mode = 2
 [node name="SpellTextInput" type="LineEdit" parent="VBoxContainer" unique_id=1649170480]
 layout_mode = 2
 size_flags_vertical = 3
+focus_neighbor_bottom = NodePath("../SpellDescriptionInput")
+focus_next = NodePath("../SpellDescriptionInput")
 theme_override_styles/normal = SubResource("StyleBoxFlat_55dxo")
 placeholder_text = "Spell name or invented incantation"
 max_length = 120
 
-[node name="SpellDescriptionInput" type="LineEdit" parent="VBoxContainer"]
+[node name="SpellDescriptionInput" type="LineEdit" parent="VBoxContainer" unique_id=1193966729]
 layout_mode = 2
+focus_neighbor_top = NodePath("../SpellTextInput")
+focus_neighbor_bottom = NodePath("../GenerateButton")
+focus_next = NodePath("../GenerateButton")
+focus_previous = NodePath("../SpellTextInput")
 theme_override_styles/normal = SubResource("StyleBoxFlat_55dxo")
 placeholder_text = "Description (optional)"
 max_length = 400
 
 [node name="GenerateButton" type="Button" parent="VBoxContainer" unique_id=262026714]
 layout_mode = 2
-focus_mode = 0
+focus_neighbor_top = NodePath("../SpellDescriptionInput")
+focus_next = NodePath("../../SpellBookPanel/VBoxContainer/FinishButton")
+focus_previous = NodePath("../SpellDescriptionInput")
 text = "Create recipe"
 
 [node name="SpellBookPanel" type="PanelContainer" parent="." unique_id=2023896037]
@@ -355,6 +363,7 @@ offset_left = 380.0
 offset_top = 20.0
 offset_right = -20.0
 offset_bottom = 70.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
 theme_override_font_sizes/font_size = 25
 text = "Craft a spell"
@@ -403,6 +412,7 @@ offset_left = 380.0
 offset_top = 74.0
 offset_right = -20.0
 offset_bottom = 112.0
+grow_horizontal = 2
 theme_override_font_sizes/font_size = 15
 text = "Invent a name or try a familiar spell."
 horizontal_alignment = 1
@@ -419,6 +429,8 @@ offset_left = 380.0
 offset_top = -55.0
 offset_right = -20.0
 offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1
 autowrap_mode = 2
@@ -459,7 +471,7 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Back to crafting"
 
-[node name="SandboxButton" type="Button" parent="ResultPanel/VBoxContainer"]
+[node name="SandboxButton" type="Button" parent="ResultPanel/VBoxContainer" unique_id=1947944729]
 layout_mode = 2
 text = "Enter sandbox"
 

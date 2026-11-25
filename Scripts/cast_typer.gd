@@ -61,8 +61,10 @@ func _process(delta: float) -> void:
 func _on_element_typed(typed_spell: Enums.Element) -> void:
 	if not _is_challenge_active:
 		return
+	var should_pluck = false
 	if typed_spell == _required_elements[_next_spell_index]:
 		_next_spell_index += 1
+		should_pluck = true
 	else:
 		mistakes += 1
 		_next_spell_index = maxi(0, _next_spell_index - 1)
@@ -70,3 +72,6 @@ func _on_element_typed(typed_spell: Enums.Element) -> void:
 	if _next_spell_index == _required_elements.size():
 		cancel_cast()
 		on_successful_cast.emit()
+		Audio.trigger_sfx("correct")
+	elif should_pluck:
+		Audio.trigger_sfx("pluck",_next_spell_index)

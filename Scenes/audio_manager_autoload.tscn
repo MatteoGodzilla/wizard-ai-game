@@ -1,11 +1,38 @@
 [gd_scene format=3 uid="uid://bln7ho5bhxsic"]
 
 [ext_resource type="Script" uid="uid://busdluy184pa4" path="res://Scripts/audio_manager.gd" id="1_sm2tf"]
-[ext_resource type="AudioStream" path="res://Audio/Harp.mp3" id="2_el2we"]
+[ext_resource type="AudioStream" uid="uid://dfys3v7ygrvdw" path="res://Audio/Harp.mp3" id="2_el2we"]
+[ext_resource type="Script" uid="uid://de007o6q3jrb3" path="res://Scripts/SFXDescriptor.gd" id="3_dyduu"]
+[ext_resource type="AudioStream" uid="uid://nkq2atniwfs7" path="res://Audio/correct.mp3" id="4_4btvh"]
+[ext_resource type="AudioStream" uid="uid://b1syeis7jtfqi" path="res://Audio/harp/C4.mp3" id="5_qoym6"]
+[ext_resource type="AudioStream" uid="uid://psjhc367pclf" path="res://Audio/harp/D4.mp3" id="6_nq2yh"]
+[ext_resource type="AudioStream" uid="uid://b00qe8kqwswc4" path="res://Audio/harp/E4.mp3" id="7_jwlhl"]
+[ext_resource type="AudioStream" uid="uid://bty06bt4x8pxv" path="res://Audio/harp/F4.mp3" id="8_7lexu"]
+[ext_resource type="AudioStream" uid="uid://dyyiu0xnelvqw" path="res://Audio/harp/G4.mp3" id="9_pd2y4"]
+[ext_resource type="AudioStream" uid="uid://dwx28bikc6t61" path="res://Audio/harp/A4.mp3" id="10_p5wp3"]
+[ext_resource type="AudioStream" uid="uid://lbmg1f3rl6k6" path="res://Audio/harp/B4.mp3" id="11_yhqyp"]
+[ext_resource type="AudioStream" uid="uid://u5bdnp3h8u14" path="res://Audio/harp/C5.mp3" id="12_8nnf4"]
+[ext_resource type="AudioStream" uid="uid://d08y65vlhgoak" path="res://Audio/harp/D5.mp3" id="13_xxdhg"]
+[ext_resource type="AudioStream" uid="uid://c85x3s0oju5kw" path="res://Audio/harp/E5.mp3" id="14_5fnwq"]
+[ext_resource type="AudioStream" uid="uid://b5ll8adnweyra" path="res://Audio/harp/F5.mp3" id="15_siaob"]
+[ext_resource type="AudioStream" uid="uid://ceg70ankmivx4" path="res://Audio/harp/G5.mp3" id="16_pmwtj"]
+
+[sub_resource type="Resource" id="Resource_sf2t0"]
+script = ExtResource("3_dyduu")
+id = &"correct"
+variants = Array[AudioStream]([ExtResource("4_4btvh")])
+metadata/_custom_type_script = "uid://de007o6q3jrb3"
+
+[sub_resource type="Resource" id="Resource_3xnd3"]
+script = ExtResource("3_dyduu")
+id = &"pluck"
+variants = Array[AudioStream]([ExtResource("5_qoym6"), ExtResource("6_nq2yh"), ExtResource("7_jwlhl"), ExtResource("8_7lexu"), ExtResource("9_pd2y4"), ExtResource("10_p5wp3"), ExtResource("11_yhqyp"), ExtResource("12_8nnf4"), ExtResource("13_xxdhg"), ExtResource("14_5fnwq"), ExtResource("15_siaob"), ExtResource("16_pmwtj")])
+metadata/_custom_type_script = "uid://de007o6q3jrb3"
 
 [node name="Audio Manager" type="Node" unique_id=1657933678]
 script = ExtResource("1_sm2tf")
 background_tracks = Array[AudioStream]([ExtResource("2_el2we")])
+sfx_descriptions = Array[ExtResource("3_dyduu")]([SubResource("Resource_sf2t0"), SubResource("Resource_3xnd3")])
 bgm_initial_volume_db = -6
 
 [node name="BGM Stream Player" type="AudioStreamPlayer" parent="." unique_id=1974145008]

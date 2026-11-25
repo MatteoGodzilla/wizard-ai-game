@@ -87,6 +87,8 @@ theme_override_constants/separation = 15
 [node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=1422444186]
 layout_mode = 2
 size_flags_vertical = 3
+focus_neighbor_bottom = NodePath("../QuitButton")
+focus_next = NodePath("../QuitButton")
 theme_override_fonts/font = ExtResource("3_n45e2")
 theme_override_font_sizes/font_size = 21
 theme_override_styles/normal = SubResource("StyleBoxFlat_m1gix")
@@ -97,6 +99,8 @@ text = "Play"
 [node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=1974242675]
 layout_mode = 2
 size_flags_vertical = 3
+focus_neighbor_top = NodePath("../PlayButton")
+focus_previous = NodePath("../PlayButton")
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
